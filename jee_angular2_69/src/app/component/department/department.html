@@ -1,0 +1,64 @@
+<div class="container mt-4">
+  <h3>Department Management</h3>
+
+  <!-- 🔹 FORM (CREATE / UPDATE) -->
+  <form (ngSubmit)="save()" #depForm="ngForm" class="mb-4">
+    <div class="row">
+      <div class="col-md-4">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Enter Name"
+          [(ngModel)]="department.name"
+          name="name"
+          required
+        />
+      </div>
+
+      <div class="col-md-4">
+        <input
+          type="email"
+          class="form-control"
+          placeholder="Enter Email"
+          [(ngModel)]="department.email"
+          name="email"
+          required
+        />
+      </div>
+
+      <div class="col-md-4">
+        <button class="btn btn-success w-100" type="submit">
+          {{ isEditeMode ? 'Update Department' : 'Add Department' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="mt-2">
+      <button type="button" class="btn btn-secondary" (click)="resetForm()">Reset</button>
+    </div>
+  </form>
+</div>
+
+<!-- .....table..... -->
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th class="text-center">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let d of departments; let i = index">
+      <td>{{ d.id }}</td>
+      <td>{{ d.name }}</td>
+      <td>{{ d.email }}</td>
+
+      <td>
+        <button class="btn btn-primary mx-3" (click)="editDepoartment(d)">Edit</button>
+        <button class="btn btn-danger mx-3" (click)="deleteDepartment(d.id!)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

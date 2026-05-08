@@ -1,0 +1,25 @@
+{
+  "department": [
+    {
+      "id": "1",
+      "name": "Tanvir",
+      "email": "emon@gmail.com"
+    },
+    {
+      "name": "Md. Tanvir",
+      "email": "tanvirhasan66270@gmail.com",
+      "id": "ANwCJUGH-DI"
+    }
+  ],
+  "employee": [
+    {
+      "id": "1",
+      "name": "Tanvir",
+      "email": "emon@gmail.com",
+      "position": "Managing derector",
+      "salary": "100000",
+      "departmentName": "Supply"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

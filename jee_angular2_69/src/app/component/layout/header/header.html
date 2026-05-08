@@ -1,0 +1,148 @@
+<nav>
+  <!-- Logo -->
+  <a class="nb-logo" href="#">
+    <div class="nb-logo-mark"><span>N</span></div>
+    <span class="nb-logo-text">Nexus</span>
+  </a>
+
+  <!-- Center Links -->
+  <div class="nb-links">
+
+    <div class="nb-item">
+      <a class="nb-link active" href="#">Home</a>
+    </div>
+
+    <!-- Products dropdown -->
+    <div class="nb-item" [class.open]="isOpen('products')">
+      <button class="nb-link" [class.open]="isOpen('products')" (click)="toggle('products', $event)">
+        Products <i class="ti ti-chevron-down"></i>
+      </button>
+      <div class="nb-dropdown" [class.open]="isOpen('products')">
+
+        <a class="nb-drop-item" href="#">
+          <div class="nb-drop-icon"><i class="ti ti-rocket"></i></div>
+          <div class="nb-drop-text">
+            <span class="nb-drop-name">Launch</span>
+            <span class="nb-drop-desc">Deploy your projects fast</span>
+          </div>
+        </a>
+
+        <a class="nb-drop-item" href="#">
+          <div class="nb-drop-icon"><i class="ti ti-chart-bar"></i></div>
+          <div class="nb-drop-text">
+            <span class="nb-drop-name">Analytics</span>
+            <span class="nb-drop-desc">Track performance & growth</span>
+          </div>
+        </a>
+
+        <a class="nb-drop-item" href="#">
+          <div class="nb-drop-icon"><i class="ti ti-shield"></i></div>
+          <div class="nb-drop-text">
+            <span class="nb-drop-name">Security</span>
+            <span class="nb-drop-desc">Protect your data</span>
+          </div>
+        </a>
+
+        <!-- <a class="nb-drop-item" href="#">
+          <div class="nb-drop-icon"><i class="ti ti-cloud"></i></div>
+          <div class="nb-drop-text">
+            <span class="nb-drop-name">Cloud Storage</span>
+            <span class="nb-drop-desc">Store & sync your files</span>
+          </div>
+        </a>
+
+        <a class="nb-drop-item" href="#">
+          <div class="nb-drop-icon"><i class="ti ti-api"></i></div>
+          <div class="nb-drop-text">
+            <span class="nb-drop-name">API Access</span>
+            <span class="nb-drop-desc">Integrate with any platform</span>
+          </div>
+        </a> -->
+<!-- 
+        <a class="nb-drop-item" href="#">
+          <div class="nb-drop-icon"><i class="ti ti-robot"></i></div>
+          <div class="nb-drop-text">
+            <span class="nb-drop-name">AI Assistant</span>
+            <span class="nb-drop-desc">Automate your workflow</span>
+          </div>
+        </a> -->
+
+      </div>
+    </div>
+
+    <!-- About dropdown -->
+    <div class="nb-item" [class.open]="isOpen('about')">
+      <button class="nb-link" [class.open]="isOpen('about')" (click)="toggle('about', $event)">
+        About <i class="ti ti-chevron-down"></i>
+      </button>
+      <div class="nb-dropdown" [class.open]="isOpen('about')">
+
+        <a class="nb-drop-item" href="#">
+          <div class="nb-drop-icon"><i class="ti ti-users"></i></div>
+          <div class="nb-drop-text">
+            <span class="nb-drop-name">Team</span>
+            <span class="nb-drop-desc">Meet our people</span>
+          </div>
+        </a>
+
+        <a class="nb-drop-item" href="#">
+          <div class="nb-drop-icon"><i class="ti ti-building"></i></div>
+          <div class="nb-drop-text">
+            <span class="nb-drop-name">Company</span>
+            <span class="nb-drop-desc">Our story & mission</span>
+          </div>
+        </a>
+
+        <a class="nb-drop-item" href="#">
+          <div class="nb-drop-icon"><i class="ti ti-target"></i></div>
+          <div class="nb-drop-text">
+            <span class="nb-drop-name">Vision</span>
+            <span class="nb-drop-desc">Where we are headed</span>
+          </div>
+        </a>
+
+        <div class="nb-drop-divider"></div>
+
+        <!-- <a class="nb-drop-item" href="#">
+          <div class="nb-drop-icon"><i class="ti ti-news"></i></div>
+          <div class="nb-drop-text">
+            <span class="nb-drop-name">Blog</span>
+            <span class="nb-drop-desc">Latest updates & articles</span>
+          </div>
+        </a>
+
+        <a class="nb-drop-item" href="#">
+          <div class="nb-drop-icon"><i class="ti ti-award"></i></div>
+          <div class="nb-drop-text">
+            <span class="nb-drop-name">Careers</span>
+            <span class="nb-drop-desc">Join our growing team</span>
+          </div>
+        </a> -->
+
+        <!-- <a class="nb-drop-item" href="#">
+          <div class="nb-drop-icon"><i class="ti ti-mail"></i></div>
+          <div class="nb-drop-text">
+            <span class="nb-drop-name">Press</span>
+            <span class="nb-drop-desc">Media & press inquiries</span>
+          </div>
+        </a> -->
+
+      </div>
+    </div>
+
+    <div class="nb-item">
+      <a class="nb-link" href="#">Pricing</a>
+    </div>
+
+    <div class="nb-item">
+      <a class="nb-link" href="#">Contact</a>
+    </div>
+
+  </div>
+
+  <!-- Actions -->
+  <div class="nb-actions">
+    <button class="nb-btn-ghost">Log in</button>
+    <button class="nb-btn-primary">Get started</button>
+  </div>
+</nav>

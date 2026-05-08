@@ -1,0 +1,28 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Position</th>
+      <th>Salary</th>
+      <th>Department Name</th>
+      <th class="text-center">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let d of employees">
+      <td>{{ d.id }}</td>
+      <td>{{ d.name }}</td>
+      <td>{{ d.email }}</td>
+      <td>{{ d.position }}</td>
+      <td>{{ d.salary }}</td>
+      <td>{{ d.departmentName }}</td>
+
+      <td >
+        <button class="btn btn-primary mx-3" [routerLink]="['edit/', d.id!]">Edit</button>
+        <button class="btn btn-danger mx-3" (click)="remove(d.id!)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

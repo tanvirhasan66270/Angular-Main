@@ -1,0 +1,22 @@
+<div class="container mt-4">
+  <h3>{{ isEditeMode ? 'Edit Department' : 'Add New Department' }}</h3>
+  <form (ngSubmit)="save()" #studentForm="ngForm">
+    <div class="mb-3">
+      <label>Name</label>
+      <input type="text" class="form-control" [(ngModel)]="department.name" name="name" required />
+    </div>
+    <div class="mb-3">
+      <label>Email</label>
+      <input
+        type="email"
+        class="form-control"
+        [(ngModel)]="department.email"
+        name="email"
+        required
+      />
+    </div>
+
+    <button type="submit" class="btn btn-success"   >Save</button>
+    <button type="button" class="btn btn-secondary ms-2" (click)="goBack()">Cancel</button>
+  </form>
+</div>
