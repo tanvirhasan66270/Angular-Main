@@ -8,7 +8,7 @@ import { enviroment } from '../../environmrnts/enviroments';
   providedIn: 'root',
 })
 export class DepartmentService {
-  private departmentApi = enviroment.apiUrl+"department";
+  private departmentApi : string = enviroment.apiUrl+"department";
 
   constructor(private http: HttpClient) {}
 
