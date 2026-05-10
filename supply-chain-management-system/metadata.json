@@ -1,0 +1,6 @@
+{
+  "name": "Supply Chain Management System",
+  "description": "Integrated Management System (IMS) for SCM covering Procurement, Inventory, QC, Logistics, and Accounts with role-based access.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

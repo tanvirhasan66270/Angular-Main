@@ -1,0 +1,134 @@
+{
+  "users": [
+    [
+    {
+        "userId": "admin",
+        "name": "System Admin",
+        "email": "admin@ims.com",
+        "password": "password123",
+        "role": "ADMIN",
+        "isActive": true
+    },
+    {
+        "userId": "U1",
+        "name": "Alamin (Manager)",
+        "email": "manager@ims.com",
+        "password": "password123",
+        "role": "SCM_MANAGER",
+        "isActive": true
+    },
+    {
+        "userId": "U2",
+        "name": "Rahim (Procurement)",
+        "email": "procurement@ims.com",
+        "password": "password123",
+        "role": "PROCUREMENT",
+        "isActive": true
+    },
+    {
+        "userId": "U3",
+        "name": "Karim (Store Keeper)",
+        "email": "store@ims.com",
+        "password": "password123",
+        "role": "INVENTORY",
+        "isActive": true
+    },
+    {
+        "userId": "U4",
+        "name": "Jalil (QC)",
+        "email": "qc@ims.com",
+        "password": "password123",
+        "role": "QC",
+        "isActive": true
+    },
+    {
+        "userId": "U5",
+        "name": "Rafiq (Logistics)",
+        "email": "logistics@ims.com",
+        "password": "password123",
+        "role": "LOGISTICS",
+        "isActive": true
+    },
+    {
+        "userId": "U6",
+        "name": "Faruk (Accounts)",
+        "email": "commercial@ims.com",
+        "password": "password123",
+        "role": "COMMERCIAL",
+        "isActive": true
+    },
+    {
+        "userId": "U7",
+        "name": "Hasan (Customer)",
+        "email": "hasan@customer.com",
+        "password": "password123",
+        "role": "CUSTOMER",
+        "isActive": true
+    },
+    {
+        "userId": "U8",
+        "name": "Rubel (Driver)",
+        "email": "driver@ims.com",
+        "password": "password123",
+        "role": "DRIVER",
+        "isActive": true
+    },
+    {
+        "name": "Tanvir",
+        "email": "tanvir@gmail.com",
+        "password": "password123",
+        "role": "CUSTOMER",
+        "isActive": true,
+        "userId": "U10"
+    },
+    {
+        "name": "eee",
+        "email": "e@e.c",
+        "password": "123456",
+        "role": "ADMIN",
+        "isActive": true,
+        "userId": "U11"
+    },
+    {
+        "name": "emran",
+        "email": "emran@gmail.com",
+        "password": "password123",
+        "role": "CUSTOMER",
+        "isActive": true,
+        "userId": "U12"
+    }
+]],
+  "products": [
+    { "productId": "P1", "name": "Raw Cotton", "category": "Raw Material", "unit": "kg", "reorderPoint": 500, "unitCost": 120, "availability": "AVAILABLE", "imageUrl": "https://picsum.photos/seed/cotton/200/200" },
+    { "productId": "P2", "name": "Polyester Yarn", "category": "Raw Material", "unit": "kg", "reorderPoint": 300, "unitCost": 200, "availability": "AVAILABLE", "imageUrl": "https://picsum.photos/seed/yarn/200/200" },
+    { "productId": "P3", "name": "Denim Fabric", "category": "Finished Goods", "unit": "meters", "reorderPoint": 1000, "unitCost": 450, "availability": "AVAILABLE", "imageUrl": "https://picsum.photos/seed/denim/200/200" }
+  ],
+  "suppliers": [
+    { "supplierId": "S1", "name": "ABC Trading", "contactPerson": "Mr. Khan", "email": "contact@abctrading.com", "phone": "01711000000", "address": "Motijheel, Dhaka" },
+    { "supplierId": "S2", "name": "Global Yarn Co.", "contactPerson": "Ms. Rahman", "email": "sales@globalyarn.com", "phone": "01811000000", "address": "Agrabad, Chittagong" }
+  ],
+  "inventory": [
+    { "inventoryId": "INV1", "productId": "P1", "warehouseId": "W1", "quantityOnHand": 450, "quantityAvailable": 450, "stockStatus": "LOW" },
+    { "inventoryId": "INV2", "productId": "P2", "warehouseId": "W1", "quantityOnHand": 800, "quantityAvailable": 800, "stockStatus": "NORMAL" },
+    { "inventoryId": "INV3", "productId": "P3", "warehouseId": "W2", "quantityOnHand": 2000, "quantityAvailable": 1500, "stockStatus": "NORMAL" }
+  ],
+  "grns": [
+    { "grnId": "GRN-1001", "poId": "PO-901", "productId": "P1", "quantity": 600, "receivedBy": "U3", "warehouseId": "W1", "receivedAt": "2026-05-10T00:00:00.000Z", "status": "QC_PENDING" },
+    { "grnId": "GRN-1002", "poId": "PO-902", "productId": "P2", "quantity": 200, "receivedBy": "U3", "warehouseId": "W1", "receivedAt": "2026-05-10T00:00:00.000Z", "status": "QC_PASSED" },
+    { "grnId": "GRN-1003", "poId": "PO-904", "productId": "P1", "quantity": 100, "receivedBy": "U3", "warehouseId": "W1", "receivedAt": "2026-05-09T00:00:00.000Z", "status": "QC_FAILED" }
+  ],
+  "purchaseOrders": [
+    { "poId": "PO-901", "poNumber": "PO-2026-001", "supplierId": "S1", "totalAmount": 72000, "createdAt": "2026-05-05T00:00:00.000Z", "expectedDeliveryDate": "2026-05-10T00:00:00.000Z", "status": "RECEIVED" },
+    { "poId": "PO-902", "poNumber": "PO-2026-002", "supplierId": "S2", "totalAmount": 40000, "createdAt": "2026-05-07T00:00:00.000Z", "expectedDeliveryDate": "2026-05-10T00:00:00.000Z", "status": "RECEIVED" },
+    { "poId": "PO-903", "poNumber": "PO-2026-003", "supplierId": "S1", "totalAmount": 55000, "createdAt": "2026-05-09T00:00:00.000Z", "expectedDeliveryDate": "2026-05-13T00:00:00.000Z", "status": "SENT" },
+    { "poId": "PO-904", "poNumber": "PO-2026-004", "supplierId": "S1", "totalAmount": 15000, "createdAt": "2026-05-06T00:00:00.000Z", "expectedDeliveryDate": "2026-05-08T00:00:00.000Z", "status": "RECEIVED" }
+  ],
+  "shipments": [
+    { "shipmentId": "SHP-001", "orderId": "ORD-551", "vehicleId": "V1", "status": "IN_TRANSIT", "destination": "Dhaka Central" },
+    { "shipmentId": "SHP-002", "orderId": "ORD-552", "vehicleId": "V2", "status": "PENDING", "destination": "Chittagong Port" }
+  ],
+  "invoices": [
+    { "invoiceId": "INV-2026-001", "supplierId": "S1", "poId": "PO-901", "amount": 72000, "status": "PENDING" },
+    { "invoiceId": "INV-2026-002", "supplierId": "S2", "poId": "PO-902", "amount": 40000, "status": "PENDING", "deliveryDate": "2026-05-10T00:00:00.000Z" }
+  ]
+}
