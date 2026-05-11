@@ -1,15 +1,16 @@
 import {
   ApplicationConfig,
-  provideClientHydration, // Removed: provideBrowserGlobalErrorListeners as it's not used
-  provideHttpClient
 } from '@angular/core';
-import {provideRouter} from '@angular/router';
+import { provideRouter } from '@angular/router';
+import { provideClientHydration } from '@angular/platform-browser';
+import { provideHttpClient } from '@angular/common/http';
 
-import {routes} from './app.routes';
+import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(), // Added HttpClient provider
-  ],
+    provideClientHydration(),
+    provideHttpClient(),
+  ]
 };

@@ -15,7 +15,7 @@ import { AuthService } from '../services/auth.service';
       <div class="flex items-center justify-between">
         <h2 class="text-2xl font-bold tracking-tight text-slate-900">Procurement & Sourcing</h2>
         @if (canCreatePO()) {
-          <button class="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition shadow-sm flex items-center">
+          <button (click)="openCreatePOModal()" class="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition shadow-sm flex items-center">
             <mat-icon class="text-[18px] mr-2">add</mat-icon> Create PO
           </button>
         }
@@ -23,23 +23,23 @@ import { AuthService } from '../services/auth.service';
 
       <!-- Stats -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl p-5 shadow-xl shadow-slate-200/40 border border-white/60 hover:-translate-y-1 transition-all duration-300 opacity-0 animate-fade-in-up">
           <p class="text-sm font-medium text-slate-500">Active POs</p>
           <p class="text-3xl font-bold text-slate-900 mt-2">{{ db.purchaseOrders().length }}</p>
         </div>
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl p-5 shadow-xl shadow-slate-200/40 border border-white/60 hover:-translate-y-1 transition-all duration-300 opacity-0 animate-fade-in-up">
           <p class="text-sm font-medium text-slate-500">Pending Approvals</p>
           <p class="text-3xl font-bold text-amber-600 mt-2">2</p>
         </div>
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl p-5 shadow-xl shadow-slate-200/40 border border-white/60 hover:-translate-y-1 transition-all duration-300 opacity-0 animate-fade-in-up">
           <p class="text-sm font-medium text-slate-500">Vendor Network</p>
           <p class="text-3xl font-bold text-slate-900 mt-2">{{ db.suppliers().length }}</p>
         </div>
       </div>
 
       <!-- PO Table -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden text-sm">
-        <div class="p-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
+      <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl shadow-slate-200/40 border border-white/60 overflow-hidden opacity-0 animate-fade-in-up text-sm">
+        <div class="p-5 border-b border-white/40 flex justify-between items-center bg-gradient-to-r from-slate-50 to-white">
           <h3 class="font-semibold text-slate-800">Purchase Orders (PO)</h3>
         </div>
         
@@ -78,8 +78,8 @@ import { AuthService } from '../services/auth.service';
       </div>
 
       <!-- Vendor Management Table -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden text-sm mt-8">
-        <div class="p-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
+      <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl shadow-slate-200/40 border border-white/60 overflow-hidden opacity-0 animate-fade-in-up text-sm mt-8">
+        <div class="p-5 border-b border-white/40 flex justify-between items-center bg-gradient-to-r from-slate-50 to-white">
           <h3 class="font-semibold text-slate-800">Vendor Management</h3>
           @if (canManageSuppliers()) {
             <button (click)="openAddSupplierModal()" class="px-3 py-1.5 bg-blue-100 text-blue-800 hover:bg-blue-200 rounded text-xs font-medium transition shadow-sm flex items-center">
@@ -125,7 +125,7 @@ import { AuthService } from '../services/auth.service';
       </div>
 
       <!-- Supplier Performance Report -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden text-sm mt-8">
+      <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl shadow-slate-200/40 border border-white/60 overflow-hidden opacity-0 animate-fade-in-up text-sm mt-8">
         <div class="p-5 border-b border-slate-200 bg-slate-50/50">
           <h3 class="font-semibold text-slate-800">Supplier Performance Report</h3>
           <p class="text-xs text-slate-500 mt-1">Analyze on-time delivery rate and QC pass rate for suppliers.</p>
@@ -263,6 +263,52 @@ import { AuthService } from '../services/auth.service';
         </div>
       </div>
     }
+
+    <!-- Create PO Modal -->
+    @if (isCreatePOModalOpen()) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[90vh]">
+          <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+            <h3 class="text-lg font-bold text-slate-900">Create Purchase Order</h3>
+            <button (click)="closeCreatePOModal()" class="text-slate-400 hover:text-slate-600 w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 transition">
+              <mat-icon viewBox="0 0 24 24">close</mat-icon>
+            </button>
+          </div>
+          
+          <div class="p-5 overflow-y-auto">
+            <form [formGroup]="poForm" class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Supplier *</label>
+                <select formControlName="supplierId" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white">
+                  <option value="" disabled>Select a supplier</option>
+                  @for (sup of db.suppliers(); track sup.supplierId) {
+                    <option [value]="sup.supplierId">{{ sup.name }} ({{ sup.supplierId }})</option>
+                  }
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Total Amount (BDT) *</label>
+                <input type="number" formControlName="totalAmount" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Expected Delivery Date *</label>
+                <input type="date" formControlName="expectedDeliveryDate" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm">
+              </div>
+            </form>
+          </div>
+          
+          <div class="p-5 border-t border-slate-100 flex justify-end space-x-3 bg-slate-50/50">
+            <button (click)="closeCreatePOModal()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg text-sm font-medium transition shadow-sm">
+              Cancel
+            </button>
+            <button (click)="createPO()" [disabled]="poForm.invalid" 
+                    class="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg text-sm font-medium transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+              Submit PO
+            </button>
+          </div>
+        </div>
+      </div>
+    }
   `
 })
 export class ProcurementComponent {
@@ -283,6 +329,8 @@ export class ProcurementComponent {
   isSupplierModalOpen = signal(false);
   editingSupplierId = signal<string | null>(null);
 
+  isCreatePOModalOpen = signal(false);
+
   // Filters
   filterSupplierId = signal<string>('');
   filterStartDate = signal<string>('');
@@ -294,6 +342,12 @@ export class ProcurementComponent {
     email: ['', [Validators.required, Validators.email]],
     phone: ['', Validators.required],
     address: ['', Validators.required],
+  });
+
+  poForm = this.fb.group({
+    supplierId: ['', Validators.required],
+    totalAmount: [0, [Validators.required, Validators.min(1)]],
+    expectedDeliveryDate: ['', Validators.required]
   });
 
   filteredPerformance = computed(() => {
@@ -416,6 +470,22 @@ export class ProcurementComponent {
         this.db.addSupplier(this.supplierForm.value as any);
       }
       this.closeSupplierModal();
+    }
+  }
+
+  openCreatePOModal() {
+    this.poForm.reset({ supplierId: '', totalAmount: 0, expectedDeliveryDate: '' });
+    this.isCreatePOModalOpen.set(true);
+  }
+
+  closeCreatePOModal() {
+    this.isCreatePOModalOpen.set(false);
+  }
+
+  createPO() {
+    if (this.poForm.valid) {
+      this.db.addPurchaseOrder(this.poForm.value as any);
+      this.closeCreatePOModal();
     }
   }
 }

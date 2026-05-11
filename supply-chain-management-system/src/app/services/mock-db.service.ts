@@ -138,6 +138,20 @@ export class MockDbService {
     this.suppliers.update(s => [...s, newSupplier]);
   }
 
+  addPurchaseOrder(data: Partial<PurchaseOrder>) {
+    const count = this.purchaseOrders().length + 1;
+    const newPo: PurchaseOrder = {
+      poId: `PO-${900 + count}`,
+      poNumber: `PO-2026-${count.toString().padStart(3, '0')}`,
+      supplierId: data.supplierId || '',
+      totalAmount: data.totalAmount || 0,
+      expectedDeliveryDate: data.expectedDeliveryDate || new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      status: POStatus.SENT
+    };
+    this.purchaseOrders.update(pos => [newPo, ...pos]);
+  }
+
   updateSupplier(id: string, data: Omit<Supplier, 'supplierId'>) {
     this.suppliers.update(s => s.map(sup => sup.supplierId === id ? { ...sup, ...data } : sup));
   }
@@ -164,5 +178,37 @@ export class MockDbService {
       userId: `U${this.users().length + 1}`
     };
     this.users.update(u => [...u, newUser]);
+  }
+
+  addProduct(data: Omit<Product, 'productId'>) {
+    const newProduct: Product = {
+      ...data,
+      productId: `P${this.products().length + 1}`
+    };
+    this.products.update(p => [...p, newProduct]);
+  }
+
+  updateProduct(id: string, data: Partial<Product>) {
+    this.products.update(p => p.map(prod => prod.productId === id ? { ...prod, ...data } : prod));
+  }
+
+  deleteProduct(id: string) {
+    this.products.update(p => p.filter(prod => prod.productId !== id));
+  }
+
+  addInventory(data: Omit<Inventory, 'inventoryId'>) {
+    const newInv: Inventory = {
+      ...data,
+      inventoryId: `INV${Math.floor(Math.random() * 10000)}`
+    };
+    this.inventory.update(i => [...i, newInv]);
+  }
+
+  updateInventory(id: string, data: Partial<Inventory>) {
+    this.inventory.update(invs => invs.map(inv => inv.inventoryId === id ? { ...inv, ...data } : inv));
+  }
+
+  deleteInventory(id: string) {
+    this.inventory.update(invs => invs.filter(inv => inv.inventoryId !== id));
   }
 }

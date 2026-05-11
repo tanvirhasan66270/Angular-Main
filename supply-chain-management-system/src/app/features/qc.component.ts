@@ -18,18 +18,18 @@ import { GRNStatus, UserRole } from '../models/ims.models';
 
       <!-- Quick Summary -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl p-5 shadow-xl shadow-slate-200/40 border border-white/60 hover:-translate-y-1 transition-all duration-300 opacity-0 animate-fade-in-up">
           <p class="text-sm font-medium text-slate-500">Pending Inspections</p>
           <p class="text-3xl font-bold text-slate-900 mt-2">{{ pendingGRNs().length }}</p>
         </div>
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl p-5 shadow-xl shadow-slate-200/40 border border-white/60 hover:-translate-y-1 transition-all duration-300 opacity-0 animate-fade-in-up">
           <p class="text-sm font-medium text-slate-500">Passed Today</p>
           <p class="text-3xl font-bold text-emerald-600 mt-2">{{ passedTodayCount() }}</p>
         </div>
       </div>
 
       <!-- Pending Queue -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden text-sm">
+      <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl shadow-slate-200/40 border border-white/60 overflow-hidden opacity-0 animate-fade-in-up text-sm">
         <div class="p-5 border-b border-slate-200 bg-slate-50/50">
           <h3 class="font-semibold text-slate-800">Pending Inspection Queue (Incoming GRNs)</h3>
         </div>
@@ -83,7 +83,7 @@ import { GRNStatus, UserRole } from '../models/ims.models';
       </div>
       
       <!-- Inspection History -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden text-sm">
+      <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl shadow-slate-200/40 border border-white/60 overflow-hidden opacity-0 animate-fade-in-up text-sm">
         <div class="p-5 border-b border-slate-200 bg-slate-50/50">
           <h3 class="font-semibold text-slate-800">Inspection History</h3>
         </div>

@@ -18,19 +18,19 @@ import { AuthService } from '../services/auth.service';
 
       <!-- Financial Dashboard -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl p-5 shadow-xl shadow-slate-200/40 border border-white/60 hover:-translate-y-1 transition-all duration-300 opacity-0 animate-fade-in-up">
           <p class="text-sm font-medium text-slate-500">Accounts Payable</p>
           <p class="text-2xl font-bold text-red-600 mt-2">{{ 240500 | currency:'BDT ' }}</p>
         </div>
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl p-5 shadow-xl shadow-slate-200/40 border border-white/60 hover:-translate-y-1 transition-all duration-300 opacity-0 animate-fade-in-up">
           <p class="text-sm font-medium text-slate-500">Accounts Receivable</p>
           <p class="text-2xl font-bold text-emerald-600 mt-2">{{ 850000 | currency:'BDT ' }}</p>
         </div>
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl p-5 shadow-xl shadow-slate-200/40 border border-white/60 hover:-translate-y-1 transition-all duration-300 opacity-0 animate-fade-in-up">
           <p class="text-sm font-medium text-slate-500">Active LCs</p>
           <p class="text-2xl font-bold text-slate-900 mt-2">3</p>
         </div>
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl p-5 shadow-xl shadow-slate-200/40 border border-white/60 hover:-translate-y-1 transition-all duration-300 opacity-0 animate-fade-in-up">
           <p class="text-sm font-medium text-slate-500">Op. Expense (MTD)</p>
           <p class="text-2xl font-bold text-slate-900 mt-2">{{ 112000 | currency:'BDT ' }}</p>
         </div>
@@ -38,7 +38,7 @@ import { AuthService } from '../services/auth.service';
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Invoice Approvals -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden text-sm">
+        <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl shadow-slate-200/40 border border-white/60 overflow-hidden opacity-0 animate-fade-in-up text-sm">
           <div class="p-5 border-b border-slate-200 bg-slate-50/50">
             <h3 class="font-semibold text-slate-800">Pending Invoice Approvals</h3>
           </div>
@@ -71,7 +71,7 @@ import { AuthService } from '../services/auth.service';
         </div>
 
         <!-- VAT Calculator Simulation -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden text-sm p-6 flex flex-col h-full">
+        <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl shadow-slate-200/40 border border-white/60 overflow-hidden opacity-0 animate-fade-in-up text-sm p-6 flex flex-col h-full">
           <h3 class="font-semibold text-slate-800 mb-4 flex items-center">
             <mat-icon class="mr-2 text-indigo-500">calculate</mat-icon> Multi-Currency VAT Calculator
           </h3>

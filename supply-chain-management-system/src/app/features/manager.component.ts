@@ -1,13 +1,14 @@
 import { Component, inject, computed, signal } from '@angular/core';
 import { MockDbService } from '../services/mock-db.service';
 import { MatIconModule } from '@angular/material/icon';
-import { CurrencyPipe, DecimalPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-manager-dashboard',
   standalone: true,
-  imports: [MatIconModule, CurrencyPipe, DecimalPipe, DatePipe, FormsModule],
+  imports: [MatIconModule, CurrencyPipe, DatePipe, FormsModule, RouterLink],
   template: `
     <div class="space-y-6">
       <!-- Header -->
@@ -39,7 +40,7 @@ import { FormsModule } from '@angular/forms';
       <!-- KPIs -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- Revenue -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 relative overflow-hidden group">
+        <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl p-5 shadow-xl shadow-emerald-100/50 border border-white/60 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 opacity-0 animate-fade-in-up">
           <div class="flex justify-between items-start">
             <div>
               <p class="text-sm font-medium text-slate-500">Total Revenue (Month)</p>
@@ -56,7 +57,7 @@ import { FormsModule } from '@angular/forms';
         </div>
 
         <!-- Inventory Value -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-5 shadow-xl shadow-blue-100/50 border border-white/60 relative overflow-hidden hover:-translate-y-1 transition-all duration-300 opacity-0 animate-fade-in-up animation-delay-200">
           <div class="flex justify-between items-start">
             <div>
               <p class="text-sm font-medium text-slate-500">Inventory Value</p>
@@ -72,7 +73,7 @@ import { FormsModule } from '@angular/forms';
         </div>
 
         <!-- Active Shipments -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="bg-gradient-to-br from-purple-50 to-fuchsia-50 rounded-3xl p-5 shadow-xl shadow-purple-100/50 border border-white/60 relative overflow-hidden hover:-translate-y-1 transition-all duration-300 opacity-0 animate-fade-in-up animation-delay-400">
           <div class="flex justify-between items-start">
             <div>
               <p class="text-sm font-medium text-slate-500">Active Shipments</p>
@@ -88,7 +89,7 @@ import { FormsModule } from '@angular/forms';
         </div>
 
         <!-- Low Stock Alerts -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-red-200 bg-red-50/30">
+        <div class="bg-gradient-to-br from-red-50 to-rose-50 rounded-3xl p-5 shadow-xl shadow-red-100/50 border border-white/60 relative overflow-hidden hover:-translate-y-1 transition-all duration-300 opacity-0 animate-fade-in-up animation-delay-600">
           <div class="flex justify-between items-start">
             <div>
               <p class="text-sm font-medium text-red-600">Low Stock Alerts</p>
@@ -108,12 +109,12 @@ import { FormsModule } from '@angular/forms';
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         <!-- Inventory Table -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden text-sm">
-          <div class="p-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
+        <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl shadow-slate-200/40 border border-white/60 overflow-hidden text-sm opacity-0 animate-fade-in-up animation-delay-200">
+          <div class="p-5 border-b border-white/40 flex justify-between items-center bg-gradient-to-r from-slate-50 to-white">
             <h3 class="font-semibold text-slate-800">Critical Inventory</h3>
-            <button class="text-emerald-600 font-medium hover:text-emerald-700 transition flex items-center">
+            <a routerLink="/inventory" class="text-emerald-600 font-medium hover:text-emerald-700 transition flex items-center cursor-pointer">
               View all <mat-icon class="text-[16px] ml-1">arrow_forward</mat-icon>
-            </button>
+            </a>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
@@ -146,8 +147,8 @@ import { FormsModule } from '@angular/forms';
         </div>
 
         <!-- Recent POs -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden text-sm">
-          <div class="p-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
+        <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl shadow-slate-200/40 border border-white/60 overflow-hidden text-sm opacity-0 animate-fade-in-up animation-delay-400">
+          <div class="p-5 border-b border-white/40 flex justify-between items-center bg-gradient-to-r from-slate-50 to-white">
             <h3 class="font-semibold text-slate-800">Pending Purchase Orders</h3>
           </div>
           <div class="p-5 space-y-4">

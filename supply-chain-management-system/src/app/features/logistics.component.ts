@@ -23,15 +23,15 @@ import { ShipmentStatus, UserRole } from '../models/ims.models';
 
       <!-- Stats -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl p-5 shadow-xl shadow-slate-200/40 border border-white/60 hover:-translate-y-1 transition-all duration-300 opacity-0 animate-fade-in-up">
           <p class="text-sm font-medium text-slate-500">Ready for Dispatch</p>
           <p class="text-3xl font-bold text-slate-900 mt-2">{{ getShipments(ShipmentStatus.PENDING).length }}</p>
         </div>
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl p-5 shadow-xl shadow-slate-200/40 border border-white/60 hover:-translate-y-1 transition-all duration-300 opacity-0 animate-fade-in-up">
           <p class="text-sm font-medium text-slate-500">On Transit</p>
           <p class="text-3xl font-bold text-blue-600 mt-2">{{ getShipments(ShipmentStatus.IN_TRANSIT).length }}</p>
         </div>
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl p-5 shadow-xl shadow-slate-200/40 border border-white/60 hover:-translate-y-1 transition-all duration-300 opacity-0 animate-fade-in-up">
           <p class="text-sm font-medium text-slate-500">Available Vehicles</p>
           <p class="text-3xl font-bold text-emerald-600 mt-2">12</p>
         </div>
@@ -70,7 +70,7 @@ import { ShipmentStatus, UserRole } from '../models/ims.models';
       }
 
       <!-- Tracking Table -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden text-sm">
+      <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl shadow-slate-200/40 border border-white/60 overflow-hidden opacity-0 animate-fade-in-up text-sm">
         <div class="p-5 border-b border-slate-200 bg-slate-50/50">
           <h3 class="font-semibold text-slate-800">Shipment Tracking</h3>
         </div>

@@ -31,7 +31,7 @@ import { User, UserRole, Product, ItemAvailability } from '../models/ims.models'
       @if (activeTab() === 'USERS') {
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div [class]="canEdit() ? 'lg:col-span-2 space-y-4' : 'lg:col-span-3 space-y-4'">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl shadow-slate-200/40 border border-white/60 overflow-hidden opacity-0 animate-fade-in-up">
               <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <h3 class="font-bold text-slate-800">User Directory</h3>
                 <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">{{ users().length }} Users</span>
@@ -173,7 +173,7 @@ import { User, UserRole, Product, ItemAvailability } from '../models/ims.models'
       @if (activeTab() === 'PRODUCTS') {
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div [class]="canEdit() ? 'lg:col-span-2 space-y-4' : 'lg:col-span-3 space-y-4'">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl shadow-slate-200/40 border border-white/60 overflow-hidden opacity-0 animate-fade-in-up">
               <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <h3 class="font-bold text-slate-800">Master Data: Products</h3>
                 <div class="flex items-center space-x-3">
