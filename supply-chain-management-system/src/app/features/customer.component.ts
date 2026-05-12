@@ -101,4 +101,4 @@ import { RouterLink } from '@angular/router';
     </div>
   `
 })
-export class CustomerComponent {}
+export class CustomerComponent { }
