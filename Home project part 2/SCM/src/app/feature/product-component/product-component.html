@@ -1,0 +1,249 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Product CRUD</h2>
+
+  <!-- FORM -->
+  <form (ngSubmit)="save()">
+    <div class="row">
+      <!-- Product Code -->
+      <div class="col-md-3 mb-3">
+        <label class="form-label">Product Code</label>
+
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Product Code"
+          [(ngModel)]="product.productCode"
+          name="productCode"
+        />
+      </div>
+
+      <!-- Name -->
+      <div class="col-md-3 mb-3">
+        <label class="form-label">Product Name</label>
+
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Product Name"
+          [(ngModel)]="product.name"
+          name="name"
+        />
+      </div>
+
+      <!-- Category -->
+      <div class="col-md-3 mb-3">
+        <label class="form-label">Category Id</label>
+
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Category Id"
+          [(ngModel)]="product.categoryId"
+          name="categoryId"
+        />
+      </div>
+
+      <!-- Unit -->
+      <div class="col-md-3 mb-3">
+        <label class="form-label">Unit</label>
+
+        <input
+          type="text"
+          class="form-control"
+          placeholder="pcs / kg / litre"
+          [(ngModel)]="product.unit"
+          name="unit"
+        />
+      </div>
+
+      <!-- Quantity -->
+      <div class="col-md-3 mb-3">
+        <label class="form-label">Quantity</label>
+
+        <input
+          type="number"
+          class="form-control"
+          placeholder="Quantity"
+          [(ngModel)]="product.quantity"
+          name="quantity"
+          (input)="calculateSellingPrice()"
+        />
+      </div>
+
+      <!-- Reorder -->
+      <div class="col-md-3 mb-3">
+        <label class="form-label">Reorder Point</label>
+
+        <input
+          type="number"
+          class="form-control"
+          placeholder="Reorder Point"
+          [(ngModel)]="product.reorderPoint"
+          name="reorderPoint"
+        />
+      </div>
+
+      <!-- Unit Cost -->
+      <div class="col-md-3 mb-3">
+        <label class="form-label">Unit Cost</label>
+
+        <input
+          type="number"
+          class="form-control"
+          placeholder="Unit Cost"
+          [(ngModel)]="product.unitCost"
+          name="unitCost"
+          (input)="calculateSellingPrice()"
+        />
+      </div>
+
+      <!-- Selling Price -->
+      <div class="col-md-3 mb-3">
+        <label class="form-label">Selling Price</label>
+
+        <input
+          type="number"
+          class="form-control"
+          placeholder="Selling Price"
+          [(ngModel)]="product.sellingPrice"
+          name="sellingPrice"
+          readonly
+        />
+      </div>
+
+      <!-- Availability -->
+      <div class="col-md-3 mb-3">
+        <label class="form-label">Availability</label>
+
+        <input
+          type="text"
+          class="form-control"
+          placeholder="In Stock"
+          [(ngModel)]="product.availability"
+          name="availability"
+        />
+      </div>
+
+      <!-- Expiry -->
+      <div class="col-md-3 mb-3">
+        <label class="form-label">Expiry Date</label>
+
+        <input
+          type="date"
+          class="form-control"
+          [(ngModel)]="product.hasExpiryDate"
+          name="hasExpiryDate"
+        />
+      </div>
+
+      <!-- Active -->
+      <div class="col-md-3 mb-3 d-flex align-items-center">
+        <div class="form-check mt-4">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            [(ngModel)]="product.isActive"
+            name="isActive"
+          />
+
+          <label class="form-check-label"> Active Status </label>
+        </div>
+      </div>
+
+      <!-- Image Upload -->
+      <div class="col-md-3 mb-3">
+        <label class="form-label">Product Image</label>
+
+        <input type="file" class="form-control" accept="image/*" (change)="onFileChange($event)" />
+      </div>
+
+      <!-- Image Preview -->
+      <div class="col-md-3 mb-3" *ngIf="product.image">
+        <label class="form-label d-block"> Preview </label>
+
+        <img
+          [src]="product.image"
+          width="100"
+          height="100"
+          class="rounded border object-fit-cover"
+        />
+      </div>
+    </div>
+
+    <!-- BUTTON -->
+    <div class="mt-3">
+      <button type="submit" class="btn btn-primary me-2">
+        {{ isEditMode ? 'Update Product' : 'Save Product' }}
+      </button>
+
+      <button type="button" class="btn btn-secondary" (click)="resetForm()">Reset</button>
+    </div>
+  </form>
+
+  <hr class="my-4" />
+
+  <!-- TABLE -->
+  <table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th>Image</th>
+        <th>Code</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Unit</th>
+        <th>Qty</th>
+        <th>Reorder</th>
+        <th>Cost</th>
+        <th>Price</th>
+        <th>Availability</th>
+        <th>Status</th>
+        <th>Expiry</th>
+        <th width="150">Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let p of products">
+        <!-- IMAGE -->
+        <td>
+          <img [src]="p.image" width="60" height="60" class="rounded border object-fit-cover" />
+        </td>
+
+        <td>{{ p.productCode }}</td>
+
+        <td>{{ p.name }}</td>
+
+        <td>{{ p.categoryId }}</td>
+
+        <td>{{ p.unit }}</td>
+
+        <td>{{ p.quantity }}</td>
+
+        <td>{{ p.reorderPoint }}</td>
+
+        <td>{{ p.unitCost }}</td>
+
+        <td>{{ p.sellingPrice }}</td>
+
+        <td>{{ p.availability }}</td>
+
+        <td>
+          <span class="badge" [ngClass]="p.isActive ? 'bg-success' : 'bg-danger'">
+            {{ p.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+
+        <td>
+          {{ p.hasExpiryDate || 'N/A' }}
+        </td>
+
+        <!-- ACTION -->
+        <td>
+          <button class="btn btn-warning btn-sm me-2" (click)="edit(p)">Edit</button>
+
+          <button class="btn btn-danger btn-sm" (click)="deleteProduct(p.id!)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

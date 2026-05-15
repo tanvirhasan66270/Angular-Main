@@ -1,0 +1,185 @@
+<div class="container mt-4">
+
+  <h2>Supplier CRUD</h2>
+
+  <form
+    (ngSubmit)="isEditMode ? updateSupplier() : addSupplier()"
+  >
+
+    <div class="row">
+
+      <div class="col-md-6 mb-3">
+        <label>Name</label>
+
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="supplier.name"
+          name="name"
+          required
+        />
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label>Contact Person</label>
+
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="supplier.contactPerson"
+          name="contactPerson"
+          required
+        />
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label>Email</label>
+
+        <input
+          type="email"
+          class="form-control"
+          [(ngModel)]="supplier.email"
+          name="email"
+          required
+        />
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label>Phone</label>
+
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="supplier.phone"
+          name="phone"
+          required
+        />
+      </div>
+
+      <div class="col-md-12 mb-3">
+        <label>Address</label>
+
+        <textarea
+          class="form-control"
+          rows="2"
+          [(ngModel)]="supplier.address"
+          name="address"
+        ></textarea>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label>Rating</label>
+
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="supplier.rating"
+          name="rating"
+          min="0"
+          max="5"
+          step="0.1"
+        />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label>Lead Time (Days)</label>
+
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="supplier.averageLeadTimeDays"
+          name="averageLeadTimeDays"
+        />
+      </div>
+
+      <div class="col-md-4 mb-3">
+
+        <label class="d-block">
+          Status
+        </label>
+
+        <input
+          type="checkbox"
+          [(ngModel)]="supplier.isActive"
+          name="isActive"
+        />
+
+        Active
+      </div>
+
+    </div>
+
+    <button
+      type="submit"
+      class="btn btn-primary me-2"
+    >
+      {{ isEditMode ? 'Update' : 'Save' }}
+    </button>
+
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="resetForm()"
+    >
+      Reset
+    </button>
+
+  </form>
+
+  <hr />
+
+  <table class="table table-bordered table-hover mt-3">
+
+    <thead class="table-dark">
+      <tr>
+        <th>Name</th>
+        <th>Contact</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Rating</th>
+        <th>Lead Time</th>
+        <th>Status</th>
+        <th width="180">Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let item of suppliers">
+
+        <td>{{ item.name }}</td>
+        <td>{{ item.contactPerson }}</td>
+        <td>{{ item.email }}</td>
+        <td>{{ item.phone }}</td>
+        <td>{{ item.rating }}</td>
+        <td>{{ item.averageLeadTimeDays }} Days</td>
+
+        <td>
+          {{ item.isActive ? 'Active' : 'Inactive' }}
+        </td>
+
+        <td>
+
+          <button
+            class="btn btn-warning btn-sm me-2"
+            (click)="editSupplier(item)"
+          >
+            Edit
+          </button>
+
+          <button
+            class="btn btn-danger btn-sm"
+            (click)="deleteSupplier(item.supplierId!)"
+          >
+            Delete
+          </button>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>

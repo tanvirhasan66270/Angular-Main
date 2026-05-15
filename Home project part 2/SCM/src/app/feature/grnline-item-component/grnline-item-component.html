@@ -1,0 +1,136 @@
+<div class="container mt-4">
+  <!-- ================= TITLE ================= -->
+  <h2 class="text-primary mb-4">GRN Line Item CRUD</h2>
+
+  <!-- ================= FORM ================= -->
+
+  <form (ngSubmit)="isEditMode ? update() : add()" class="card shadow p-4 mb-4">
+    <div class="row">
+      <!-- GRN DROPDOWN -->
+      <!-- GRN DROPDOWN -->
+
+      <div class="col-md-6 mb-3">
+        <label class="form-label"> Goods Received Note </label>
+
+        <select class="form-select" [(ngModel)]="item.grnId" name="grnId" required>
+          <option value="">Select GRN</option>
+
+          <option *ngFor="let g of grns" [value]="g.id">
+            {{ g.grnNumber }}
+          </option>
+        </select>
+      </div>
+
+      <!-- PRODUCT DROPDOWN -->
+      <div class="col-md-6 mb-3">
+        <label class="form-label"> Product </label>
+
+        <select class="form-select" [(ngModel)]="item.productId" name="productId" required>
+          <option value="">Select Product</option>
+
+          <option *ngFor="let p of products" [value]="p.id">
+            {{ p.name }}
+          </option>
+        </select>
+      </div>
+
+      <!-- QUANTITY ORDERED -->
+      <div class="col-md-6 mb-3">
+        <label class="form-label"> Quantity Ordered </label>
+
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="item.quantityOrdered"
+          name="quantityOrdered"
+          placeholder="Enter Quantity Ordered"
+        />
+      </div>
+
+      <!-- QUANTITY RECEIVED -->
+      <div class="col-md-6 mb-3">
+        <label class="form-label"> Quantity Received </label>
+
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="item.quantityReceived"
+          name="quantityReceived"
+          placeholder="Enter Quantity Received"
+        />
+      </div>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="mt-3">
+      <button type="submit" class="btn btn-success me-2">
+        {{ isEditMode ? 'Update' : 'Save' }}
+      </button>
+
+      <button type="button" class="btn btn-secondary" (click)="reset()">Reset</button>
+    </div>
+  </form>
+
+  <!-- ================= TABLE ================= -->
+
+  <div class="card shadow">
+    <div class="card-header bg-dark text-white">
+      <h5 class="mb-0">GRN Line Item List</h5>
+    </div>
+
+    <div class="card-body table-responsive">
+      <table class="table table-bordered table-hover table-striped align-middle">
+        <!-- TABLE HEADER -->
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>GRN Number</th>
+            <th>Product</th>
+            <th>Quantity Ordered</th>
+            <th>Quantity Received</th>
+            <th width="180">Actions</th>
+          </tr>
+        </thead>
+
+        <!-- TABLE BODY -->
+        <tbody>
+          <tr *ngFor="let data of items; let i = index">
+            <!-- SERIAL -->
+            <td>
+              {{ i + 1 }}
+            </td>
+
+            <!-- GRN -->
+            <td>
+              {{ getGRNName(data.grnId) }}
+            </td>
+
+            <!-- PRODUCT -->
+            <td>
+              {{ getProductName(data.productId) }}
+            </td>
+
+            <!-- ORDERED -->
+            <td>
+              {{ data.quantityOrdered }}
+            </td>
+
+            <!-- RECEIVED -->
+            <td>
+              {{ data.quantityReceived }}
+            </td>
+
+            <!-- ACTIONS -->
+            <td>
+              <!-- EDIT -->
+              <button class="btn btn-sm btn-primary me-1" (click)="edit(data)">Edit</button>
+
+              <!-- DELETE -->
+              <button class="btn btn-sm btn-danger" (click)="delete(data.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

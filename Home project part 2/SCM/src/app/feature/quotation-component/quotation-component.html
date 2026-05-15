@@ -1,0 +1,208 @@
+<div class="container mt-4">
+  <h2 class="text-primary mb-4">Quotation Management</h2>
+
+  <!-- ================= FORM ================= -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+      {{ isEditMode ? 'Update Quotation' : 'Create Quotation' }}
+    </div>
+
+    <div class="card-body">
+      <form (ngSubmit)="isEditMode ? update() : add()">
+        <div class="row g-3">
+          <!-- SUPPLIER -->
+          <div class="col-md-4">
+            <label class="form-label"> Supplier </label>
+
+            <select
+              class="form-select"
+              [(ngModel)]="quotation.supplierId"
+              name="supplierId"
+              required
+            >
+              <option value="">Select Supplier</option>
+
+              <option *ngFor="let s of suppliers" [value]="s.supplierId">
+                {{ s.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- PRODUCT -->
+          <div class="col-md-4">
+            <label class="form-label"> Product </label>
+
+            <select class="form-select" [(ngModel)]="quotation.productId" name="productId" required>
+              <option value="">Select Product</option>
+
+              <option *ngFor="let p of products" [value]="p.id">
+                {{ p.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- UNIT PRICE -->
+          <div class="col-md-4">
+            <label class="form-label"> Unit Price </label>
+
+            <input
+              type="number"
+              class="form-control"
+              [(ngModel)]="quotation.unitPrice"
+              name="unitPrice"
+              required
+            />
+          </div>
+
+          <!-- VALID UNTIL -->
+          <div class="col-md-4">
+            <label class="form-label"> Valid Until </label>
+
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="quotation.validUntil"
+              name="validUntil"
+              required
+            />
+          </div>
+
+          <!-- LEAD TIME -->
+          <div class="col-md-4">
+            <label class="form-label"> Lead Time Days </label>
+
+            <input
+              type="number"
+              class="form-control"
+              [(ngModel)]="quotation.leadTimeDays"
+              name="leadTimeDays"
+              required
+            />
+          </div>
+          <!-- RECEIVED AT -->
+          <div class="col-md-4">
+            <label class="form-label"> Received At Time </label>
+
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="quotation.receivedAt"
+              name="receivedAt"
+              required
+            />
+          </div>
+
+          <!-- IS SELECTED -->
+          <div class="col-md-4">
+            <label class="form-label d-block"> Selected </label>
+
+            <div class="form-check form-switch mt-2">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                [(ngModel)]="quotation.isSelected"
+                name="isSelected"
+              />
+
+              <label class="form-check-label"> Selected Quotation </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="mt-4">
+          <button type="submit" class="btn btn-primary">
+            {{ isEditMode ? 'Update' : 'Save' }}
+          </button>
+
+          <button type="button" class="btn btn-secondary ms-2" (click)="reset()">Reset</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= TABLE ================= -->
+  <div class="card shadow-sm">
+    <div class="card-header bg-dark text-white">Quotation List</div>
+
+    <div class="card-body p-0">
+      <table class="table table-bordered table-hover mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>Supplier</th>
+            <th>Product</th>
+            <th>Unit Price</th>
+            <th>Valid Until</th>
+            <th>Lead Time</th>
+            <th>Status</th>
+            <th>Received AT Time</th>
+            <th width="280">Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of quotations">
+            <!-- SUPPLIER -->
+            <td>
+              {{ getSupplierName(item.supplierId) }}
+            </td>
+
+            <!-- PRODUCT -->
+            <td>
+              {{ getProductName(item.productId) }}
+            </td>
+
+            <!-- UNIT PRICE -->
+            <td>
+              {{ item.unitPrice }}
+            </td>
+
+            <!-- VALID DATE -->
+            <td>
+              {{ item.validUntil | date: 'yyyy-MM-dd' }}
+            </td>
+
+            <!-- LEAD TIME -->
+            <td>{{ item.leadTimeDays }} Days</td>
+            <!-- ReciptAt -->
+            <td>
+              {{ item.receivedAt | date: 'yyyy-MM-dd' }}
+            </td>
+
+            <!-- STATUS -->
+            <td>
+              <span
+                class="badge"
+                [ngClass]="{
+                  'bg-success': item.isSelected,
+                  'bg-secondary': !item.isSelected,
+                }"
+              >
+                {{ item.isSelected ? 'SELECTED' : 'PENDING' }}
+              </span>
+            </td>
+
+            <!-- ACTION -->
+            <td>
+              <!-- EDIT -->
+              <button class="btn btn-sm btn-warning me-1" (click)="edit(item)">Edit</button>
+
+              <!-- SELECT -->
+              <button class="btn btn-sm btn-success me-1" (click)="selectQuotation(item)">
+                Select
+              </button>
+
+              <!-- UNSELECT -->
+              <button class="btn btn-sm btn-secondary me-1" (click)="unselectQuotation(item)">
+                Unselect
+              </button>
+
+              <!-- DELETE -->
+              <button class="btn btn-sm btn-danger" (click)="delete(item.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

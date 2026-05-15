@@ -1,0 +1,233 @@
+<div class="container mt-4">
+  <!-- TITLE -->
+  <div class="mb-3">
+    <h2 class="fw-bold text-primary">QC Inspection</h2>
+  </div>
+
+  <!-- FORM -->
+  <div class="card shadow mb-4">
+    <div class="card-header bg-primary text-white">
+      <strong>
+        {{ isEditMode ? 'Update QC Inspection' : 'Add QC Inspection' }}
+      </strong>
+    </div>
+
+    <div class="card-body">
+      <form (ngSubmit)="isEditMode ? update() : add()">
+        <div class="row g-3">
+          <!-- GRN -->
+          <div class="col-md-4">
+            <label class="form-label">GRN</label>
+            <select class="form-select" [(ngModel)]="qc.grnId" name="grnId">
+              <option value="">Select GRN</option>
+              <option *ngFor="let g of grns" [value]="g.id">
+                {{ g.grnNumber }}
+              </option>
+            </select>
+          </div>
+
+          <!-- PRODUCT -->
+          <div class="col-md-4">
+            <label class="form-label">Product</label>
+            <select class="form-select" [(ngModel)]="qc.productId" name="productId">
+              <option value="">Select Product</option>
+              <option *ngFor="let p of products" [value]="p.id">
+                {{ p.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- INSPECTED BY -->
+          <div class="col-md-4">
+            <label class="form-label">Inspected By</label>
+            <select class="form-select" [(ngModel)]="qc.inspectedBy" name="inspectedBy">
+              <option value="">Select User</option>
+              <option *ngFor="let u of users" [value]="u.userId">
+                {{ u.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- INSPECTION TYPE -->
+          <div class="col-md-4">
+            <label class="form-label">Inspection Type</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="qc.inspectionType"
+              name="inspectionType"
+            />
+          </div>
+
+          <!-- SAMPLE SIZE -->
+          <div class="col-md-4">
+            <label class="form-label">Sample Size</label>
+            <input
+              type="number"
+              class="form-control"
+              [(ngModel)]="qc.sampleSize"
+              name="sampleSize"
+            />
+          </div>
+
+          <!-- DEFECTS FOUND -->
+          <div class="col-md-4">
+            <label class="form-label">Defects Found</label>
+            <input
+              type="number"
+              class="form-control"
+              [(ngModel)]="qc.defectsFound"
+              name="defectsFound"
+            />
+          </div>
+
+          <!-- DEFECT DESCRIPTION (ONLY ONCE) -->
+          <div class="col-md-12">
+            <label class="form-label">Defect Description</label>
+            <textarea
+              class="form-control"
+              [(ngModel)]="qc.defectDescription"
+              name="defectDescription"
+            ></textarea>
+          </div>
+
+          <!-- RESULT -->
+          <div class="col-md-4">
+            <label class="form-label">Result</label>
+            <select class="form-select" [(ngModel)]="qc.result" name="result">
+              <option value="">Select Result</option>
+              <option value="good">Good</option>
+              <option value="very good">Very Good</option>
+              <option value="average">Average</option>
+              <option value="bad">Bad</option>
+            </select>
+          </div>
+
+          <!-- CERTIFICATE REF -->
+          <div class="col-md-4">
+            <label class="form-label">Certificate Ref</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="qc.certificateRef"
+              name="certificateRef"
+            />
+          </div>
+
+          <!-- LAB TEST REPORT (ONLY ONCE) -->
+          <div class="col-md-4">
+            <label class="form-label">Lab Test Report URL</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="qc.labTestReport"
+              name="labTestReport"
+            />
+          </div>
+
+          <!-- INSPECTION DATE -->
+          <div class="col-md-4">
+            <label class="form-label">Inspection Date</label>
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="qc.inspectedAt"
+              name="inspectedAt"
+            />
+          </div>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="mt-3">
+          <button class="btn btn-success me-2">
+            {{ isEditMode ? 'Update' : 'Save' }}
+          </button>
+
+          <button type="button" class="btn btn-secondary" (click)="reset()">Reset</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="card shadow">
+    <div class="card-header bg-dark text-white">QC Inspection List</div>
+
+    <div class="card-body table-responsive">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>GRN</th>
+            <th>Product</th>
+            <th>Inspector</th>
+            <th>Type</th>
+            <th>Sample Size</th>
+            <th>Defects</th>
+            <th>Description</th>
+            <th>Result</th>
+            <th>Certificate Ref</th>
+            <th>Lab Report</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of inspections; let i = index">
+            <td>{{ i + 1 }}</td>
+
+            <td>{{ getGRNName(item.grnId) }}</td>
+
+            <td>{{ getProductName(item.productId) }}</td>
+
+            <td>{{ getUserName(item.inspectedBy) }}</td>
+
+            <td>{{ item.inspectionType }}</td>
+
+            <td>{{ item.sampleSize }}</td>
+
+            <td>{{ item.defectsFound }}</td>
+
+            <td>{{ item.defectDescription }}</td>
+
+            <td>
+              <span
+                class="badge"
+                [ngClass]="{
+                  'bg-success': item.result === 'good',
+                  'bg-info': item.result === 'very good',
+                  'bg-warning': item.result === 'average',
+                  'bg-danger': item.result === 'bad',
+                }"
+              >
+                {{ item.result }}
+              </span>
+            </td>
+
+            <td>{{ item.certificateRef }}</td>
+
+            <td>
+              <a
+                *ngIf="item.labTestReport"
+                [href]="item.labTestReport"
+                target="_blank"
+                class="btn btn-sm btn-outline-primary"
+              >
+                View
+              </a>
+            </td>
+
+            <td>{{ item.inspectedAt | date: 'yyyy-MM-dd' }}</td>
+
+            <td>
+              <button class="btn btn-sm btn-primary me-1" (click)="edit(item)">Edit</button>
+
+              <button class="btn btn-sm btn-danger" (click)="delete(item.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,238 @@
+<div class="container mt-4">
+
+  <h2 class="text-primary mb-4">
+    PO Line Item Management
+  </h2>
+
+  <!-- ================= FORM ================= -->
+  <div class="card shadow-sm p-4 mb-4">
+
+    <form (ngSubmit)="isEditMode ? update() : add()">
+
+      <div class="row g-3">
+
+        <!-- PURCHASE ORDER -->
+        <div class="col-md-4">
+          <label class="form-label fw-bold">
+            Purchase Order
+          </label>
+
+          <select
+            class="form-select"
+            [(ngModel)]="item.poId"
+            name="poId"
+            required>
+
+            <option value="">Select Purchase Order</option>
+
+            <option
+              *ngFor="let o of orders"
+              [value]="o.id">
+
+              {{ o.poNumber }}
+
+            </option>
+
+          </select>
+        </div>
+
+        <!-- PRODUCT -->
+        <div class="col-md-4">
+          <label class="form-label fw-bold">
+            Product
+          </label>
+
+          <select
+            class="form-select"
+            [(ngModel)]="item.productId"
+            name="productId"
+            required>
+
+            <option value="">Select Product</option>
+
+            <option
+              *ngFor="let p of products"
+              [value]="p.id">
+
+              {{ p.name }}
+
+            </option>
+
+          </select>
+        </div>
+
+        <!-- QUANTITY -->
+        <div class="col-md-4">
+          <label class="form-label fw-bold">
+            Quantity
+          </label>
+
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="item.quantity"
+            name="quantity"
+            (input)="calculateTotal()"
+            required>
+        </div>
+
+        <!-- UNIT PRICE -->
+        <div class="col-md-4">
+          <label class="form-label fw-bold">
+            Unit Price
+          </label>
+
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="item.unitPrice"
+            name="unitPrice"
+            (input)="calculateTotal()"
+            required>
+        </div>
+
+        <!-- LINE TOTAL -->
+        <div class="col-md-4">
+          <label class="form-label fw-bold">
+            Line Total
+          </label>
+
+          <input
+            type="number"
+            class="form-control bg-light"
+            [value]="item.lineTotal"
+            readonly>
+        </div>
+
+        <!-- QUOTATION REF -->
+        <div class="col-md-4">
+          <label class="form-label fw-bold">
+            Quotation Ref
+          </label>
+
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="item.quotationRef"
+            name="quotationRef">
+        </div>
+
+      </div>
+
+      <!-- BUTTON -->
+      <div class="mt-4">
+
+        <button
+          type="submit"
+          class="btn btn-primary">
+
+          {{ isEditMode ? 'Update' : 'Save' }}
+
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-secondary ms-2"
+          (click)="reset()">
+
+          Reset
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+  <!-- ================= TABLE ================= -->
+  <div class="card shadow-sm">
+
+    <div class="card-header bg-dark text-white">
+      PO Line Item List
+    </div>
+
+    <div class="card-body p-0">
+
+      <table class="table table-striped table-hover mb-0">
+
+        <thead class="table-dark">
+
+          <tr>
+            <th>PO Number</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Line Total</th>
+            <th>Quotation Ref</th>
+            <th width="180">Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let x of items">
+
+            <!-- PO -->
+            <td>
+              {{ getPOName(x.poId) }}
+            </td>
+
+            <!-- PRODUCT -->
+            <td>
+              {{ getProductName(x.productId) }}
+            </td>
+
+            <!-- QTY -->
+            <td>
+              {{ x.quantity }}
+            </td>
+
+            <!-- UNIT PRICE -->
+            <td>
+              {{ x.unitPrice }}
+            </td>
+
+            <!-- TOTAL -->
+            <td>
+              {{ x.lineTotal }}
+            </td>
+
+            <!-- QUOTATION -->
+            <td>
+              {{ x.quotationRef || '-' }}
+            </td>
+
+            <!-- ACTION -->
+            <td>
+
+              <button
+                class="btn btn-warning btn-sm me-2"
+                (click)="edit(x)">
+
+                Edit
+
+              </button>
+
+              <button
+                class="btn btn-danger btn-sm"
+                (click)="delete(x.id)">
+
+                Delete
+
+              </button>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>

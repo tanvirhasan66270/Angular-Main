@@ -1,0 +1,297 @@
+<div class="container mt-4">
+  <!-- TITLE -->
+  <h2 class="mb-4 text-primary">Goods Received Note (GRN)</h2>
+
+  <!-- ================= FORM ================= -->
+
+  <form (ngSubmit)="isEditMode ? update() : add()" class="card shadow p-4 mb-4">
+    <div class="row">
+      <!-- GRN NUMBER -->
+      <div class="col-md-4 mb-3">
+        <label class="form-label"> GRN Number </label>
+
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="grn.grnNumber"
+          name="grnNumber"
+          placeholder="Enter GRN Number"
+          required
+        />
+      </div>
+
+      <!-- PURCHASE ORDER -->
+      <div class="col-md-4 mb-3">
+        <label class="form-label"> Purchase Order </label>
+
+        <select class="form-select" [(ngModel)]="grn.poId" name="poId" required>
+          <option value="">Select Purchase Order</option>
+
+          <option *ngFor="let po of purchaseOrders" [value]="po.id">
+            {{ po.poNumber }}
+          </option>
+        </select>
+      </div>
+
+      <!-- PRODUCT -->
+      <div class="col-md-4 mb-3">
+        <label class="form-label"> Product </label>
+
+        <select class="form-select" [(ngModel)]="grn.productId" name="productId" required>
+          <option value="">Select Product</option>
+
+          <option *ngFor="let p of products" [value]="p.id">
+            {{ p.name }}
+          </option>
+        </select>
+      </div>
+
+      <!-- QUANTITY -->
+      <div class="col-md-4 mb-3">
+        <label class="form-label"> Quantity </label>
+
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="grn.quantity"
+          name="quantity"
+          placeholder="Enter Quantity"
+        />
+      </div>
+
+      <!-- RECEIVED BY -->
+      <div class="col-md-4 mb-3">
+        <label class="form-label"> Received By </label>
+
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="grn.receivedBy"
+          name="receivedBy"
+          placeholder="Enter Receiver Name"
+        />
+      </div>
+
+      <!-- WAREHOUSE -->
+      <div class="col-md-4 mb-3">
+        <label class="form-label"> Warehouse </label>
+
+        <select class="form-select" [(ngModel)]="grn.warehouseId" name="warehouseId">
+          <option value="">Select Warehouse</option>
+
+          <option *ngFor="let w of warehouses" [value]="w.id">
+            {{ w.name }}
+          </option>
+        </select>
+      </div>
+
+      <!-- RECEIVED DATE -->
+      <div class="col-md-4 mb-3">
+        <label class="form-label"> Received Date </label>
+
+        <input type="date" class="form-control" [(ngModel)]="grn.receivedAt" name="receivedAt" />
+      </div>
+
+      <!-- STATUS -->
+      <div class="col-md-4 mb-3">
+        <label class="form-label"> Status </label>
+
+        <select class="form-select" [(ngModel)]="grn.status" name="status">
+          <option value="PENDING">PENDING</option>
+
+          <option value="APPROVED">APPROVED</option>
+
+          <option value="REJECTED">REJECTED</option>
+        </select>
+      </div>
+
+      <!-- INSPECTED BY -->
+      <div class="col-md-4 mb-3">
+        <label class="form-label"> Inspected By </label>
+
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="grn.inspectedBy"
+          name="inspectedBy"
+          placeholder="Enter Inspector Name"
+        />
+      </div>
+
+      <!-- INSPECTION DATE -->
+      <div class="col-md-4 mb-3">
+        <label class="form-label"> Inspection Date </label>
+
+        <input
+          type="date"
+          class="form-control"
+          [(ngModel)]="grn.inspectionDate"
+          name="inspectionDate"
+        />
+      </div>
+
+      <!-- INSPECTION REPORT URL -->
+      <div class="col-md-8 mb-3">
+        <label class="form-label"> Inspection Report URL </label>
+
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="grn.inspectionReportUrl"
+          name="inspectionReportUrl"
+          placeholder="Enter Report URL"
+        />
+      </div>
+
+      <!-- REMARKS -->
+      <div class="col-md-12 mb-3">
+        <label class="form-label"> Remarks </label>
+
+        <textarea
+          class="form-control"
+          rows="3"
+          [(ngModel)]="grn.remarks"
+          name="remarks"
+          placeholder="Enter Remarks"
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="mt-3">
+      <button type="submit" class="btn btn-success me-2">
+        {{ isEditMode ? 'Update' : 'Save' }}
+      </button>
+
+      <button type="button" class="btn btn-secondary" (click)="reset()">Reset</button>
+    </div>
+  </form>
+
+  <!-- ================= TABLE ================= -->
+
+  <div class="card shadow">
+    <div class="card-header bg-dark text-white">
+      <h5 class="mb-0">Goods Received Note List</h5>
+    </div>
+
+    <div class="card-body table-responsive">
+      <table class="table table-bordered table-hover table-striped align-middle">
+        <!-- TABLE HEADER -->
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>GRN Number</th>
+            <th>PO</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Received By</th>
+            <th>Warehouse</th>
+            <th>Received Date</th>
+            <th>Status</th>
+            <th>Remarks</th>
+            <th>Inspected By</th>
+            <th>Inspection Date</th>
+            <th>Report URL</th>
+            <th width="220">Actions</th>
+          </tr>
+        </thead>
+
+        <!-- TABLE BODY -->
+        <tbody>
+          <tr *ngFor="let item of grns; let i = index">
+            <!-- SERIAL -->
+            <td>
+              {{ i + 1 }}
+            </td>
+
+            <!-- GRN NUMBER -->
+            <td>
+              {{ item.grnNumber }}
+            </td>
+
+            <!-- PO -->
+            <td>
+              {{ getPOName(item.poId) }}
+            </td>
+
+            <!-- PRODUCT -->
+            <td>
+              {{ getProductName(item.productId) }}
+            </td>
+
+            <!-- QUANTITY -->
+            <td>
+              {{ item.quantity }}
+            </td>
+
+            <!-- RECEIVED BY -->
+            <td>
+              {{ item.receivedBy }}
+            </td>
+
+            <!-- WAREHOUSE -->
+            <td>
+              {{ getWarehouseName(item.warehouseId) }}
+            </td>
+
+            <!-- RECEIVED DATE -->
+            <td>
+              {{ item.receivedAt | date: 'yyyy-MM-dd' }}
+            </td>
+
+            <!-- STATUS -->
+            <td>
+              <span
+                class="badge"
+                [ngClass]="{
+                  'bg-warning': item.status === 'PENDING',
+                  'bg-success': item.status === 'APPROVED',
+                  'bg-danger': item.status === 'REJECTED',
+                }"
+              >
+                {{ item.status }}
+              </span>
+            </td>
+
+            <!-- REMARKS -->
+            <td>
+              {{ item.remarks }}
+            </td>
+
+            <!-- INSPECTED BY -->
+            <td>
+              {{ item.inspectedBy }}
+            </td>
+
+            <!-- INSPECTION DATE -->
+            <td>
+              {{ item.inspectionDate | date: 'yyyy-MM-dd' }}
+            </td>
+
+            <!-- REPORT URL -->
+            <td>
+              <a [href]="item.inspectionReportUrl" target="_blank" class="btn btn-sm btn-info">
+                View
+              </a>
+            </td>
+
+            <!-- ACTIONS -->
+            <td>
+              <!-- EDIT -->
+              <button class="btn btn-sm btn-primary me-1" (click)="edit(item)">Edit</button>
+
+              <!-- DELETE -->
+              <button class="btn btn-sm btn-danger me-1" (click)="delete(item.id)">Delete</button>
+
+              <!-- APPROVE -->
+              <button class="btn btn-sm btn-success me-1" (click)="approve(item)">Approve</button>
+
+              <!-- REJECT -->
+              <button class="btn btn-sm btn-warning" (click)="reject(item)">Reject</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
