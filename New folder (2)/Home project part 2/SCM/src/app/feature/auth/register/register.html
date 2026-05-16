@@ -1,0 +1,80 @@
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-login">
+  <div class="row w-100 max-w-6xl g-0 overflow-hidden rounded-4 shadow-2xl animate-slide-up">
+    <!-- Left Pane: Info -->
+    <div class="col-lg-5 d-none d-lg-flex flex-column justify-content-center p-5 bg-primary position-relative">
+      <div class="z-1 text-white">
+        <h2 class="display-5 fw-bold mb-4">Join the <span class="text-secondary">SCM Revolution</span></h2>
+        <ul class="list-unstyled d-flex flex-column gap-4">
+          <li class="d-flex align-items-center gap-3">
+            <div class="bg-white bg-opacity-20 rounded-circle p-2"><i class="bi bi-shield-check"></i></div>
+            <span>Enterprise-grade security & encryption</span>
+          </li>
+          <li class="d-flex align-items-center gap-3">
+            <div class="bg-white bg-opacity-20 rounded-circle p-2"><i class="bi bi-graph-up"></i></div>
+            <span>Real-time analytics and reporting</span>
+          </li>
+          <li class="d-flex align-items-center gap-3">
+            <div class="bg-white bg-opacity-20 rounded-circle p-2"><i class="bi bi-truck"></i></div>
+            <span>Global logistics & fleet management</span>
+          </li>
+        </ul>
+      </div>
+      <div class="bg-shape-1 position-absolute"></div>
+    </div>
+
+    <!-- Right Pane: Register Form -->
+    <div class="col-lg-7 bg-white p-5 d-flex flex-column justify-content-center">
+      <div class="mb-5">
+        <div class="d-flex align-items-center gap-2 mb-4">
+          <i class="bi bi-box-seam-fill text-primary fs-2"></i>
+          <span class="fs-3 fw-bold tracking-tight">SCM Pro</span>
+        </div>
+        <h2 class="fw-bold text-dark">Create your account</h2>
+        <p class="text-muted">Fill in your details to start optimizing your supply chain.</p>
+      </div>
+
+      <form (ngSubmit)="register()" #regForm="ngForm" novalidate>
+        <div class="row g-4">
+          <div class="col-md-6">
+            <label class="form-label small fw-bold text-secondary text-uppercase">Full Name</label>
+            <input type="text" name="name" [(ngModel)]="user.name" class="form-control bg-light border-0 py-2.5" placeholder="John Doe" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-bold text-secondary text-uppercase">Phone Number</label>
+            <input type="number" name="number" [(ngModel)]="user.number" class="form-control bg-light border-0 py-2.5" placeholder="01XXXXXXXXX" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label small fw-bold text-secondary text-uppercase">Work Email</label>
+            <input type="email" name="email" [(ngModel)]="user.email" class="form-control bg-light border-0 py-2.5" placeholder="name@company.com" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-bold text-secondary text-uppercase">Password</label>
+            <input type="password" name="password" [(ngModel)]="user.password" class="form-control bg-light border-0 py-2.5" placeholder="••••••••" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-bold text-secondary text-uppercase">Confirm Password</label>
+            <input type="password" name="confirmPassword" [(ngModel)]="confirmPassword" class="form-control bg-light border-0 py-2.5" placeholder="••••••••" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label small fw-bold text-secondary text-uppercase">Account Type</label>
+            <select name="role" [(ngModel)]="user.role" class="form-select bg-light border-0 py-2.5">
+              <option value="CUSTOMER">Customer Account</option>
+              <option value="SUPPLIER">Supplier Portal</option>
+              <option value="DRIVER">Logistics/Driver</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="d-grid mt-5">
+          <button type="submit" class="btn btn-primary btn-lg shadow-lg py-3" [disabled]="!regForm.form.valid">
+            Create Free Account <i class="bi bi-arrow-right ms-2"></i>
+          </button>
+        </div>
+
+        <div class="text-center mt-4">
+          <p class="text-muted small">Already have an account? <a routerLink="/login" class="text-primary fw-bold text-decoration-none">Sign In</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

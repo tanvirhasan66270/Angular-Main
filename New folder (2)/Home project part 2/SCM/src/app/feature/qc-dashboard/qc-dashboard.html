@@ -1,0 +1,146 @@
+<div class="container-fluid px-4 py-4 animate-slide-up">
+  <!-- QC Header -->
+  <div class="d-flex align-items-center justify-content-between mb-5">
+    <div>
+      <h1 class="h2 fw-bold text-dark mb-1">Quality Control Laboratory</h1>
+      <p class="text-muted mb-0">Monitor batch inspections, compliance checklists, and defect analytics.</p>
+    </div>
+    <div class="d-flex gap-3">
+      <button class="btn btn-primary rounded-pill px-4 shadow-lg" (click)="openNewInspection()">
+        <i class="bi bi-shield-plus me-2"></i>New Inspection
+      </button>
+    </div>
+  </div>
+
+  <!-- Operational KPIs -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-4 p-4 glass">
+        <div class="text-muted small fw-bold text-uppercase mb-1">Pending Inspections</div>
+        <div class="h3 fw-bold mb-0 text-primary">12</div>
+        <div class="mt-2 smaller text-muted"><i class="bi bi-clock me-1"></i> 3 Batches arriving</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-4 p-4 glass">
+        <div class="text-muted small fw-bold text-uppercase mb-1">Pass Rate (Month)</div>
+        <div class="h3 fw-bold mb-0 text-success">98.4%</div>
+        <div class="mt-2 smaller text-success fw-bold"><i class="bi bi-arrow-up me-1"></i> 0.5% vs Last Month</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-4 p-4 glass">
+        <div class="text-muted small fw-bold text-uppercase mb-1">Rejections Today</div>
+        <div class="h3 fw-bold mb-0 text-danger">2</div>
+        <div class="mt-2 smaller text-danger fw-bold"><i class="bi bi-x-circle me-1"></i> Critical defects</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-4 p-4 glass">
+        <div class="text-muted small fw-bold text-uppercase mb-1">Avg. Inspection Time</div>
+        <div class="h3 fw-bold mb-0 text-indigo">45 Min</div>
+        <div class="mt-2 smaller text-muted"><i class="bi bi-lightning-charge me-1"></i> Efficient workflow</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-5">
+    <!-- Quality Trends Chart -->
+    <div class="col-xl-8">
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+        <h5 class="fw-bold mb-4">Quality & Compliance Trends</h5>
+        <apx-chart
+          [series]="qualityChart.series"
+          [chart]="qualityChart.chart"
+          [xaxis]="qualityChart.xaxis"
+          [stroke]="qualityChart.stroke"
+          [colors]="qualityChart.colors"
+        ></apx-chart>
+      </div>
+    </div>
+
+    <!-- Inspection Queue Detail -->
+    <div class="col-xl-4">
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+        <h5 class="fw-bold mb-4">Inspection Queue</h5>
+        <div class="d-flex flex-column gap-3">
+          <div class="card border-0 bg-light p-3 rounded-3">
+            <div class="d-flex justify-content-between mb-2">
+              <span class="fw-bold small">Batch #BT-2026-991</span>
+              <span class="badge bg-primary rounded-pill">Electronic</span>
+            </div>
+            <div class="smaller text-muted mb-2">Supplier: Global Tech Solutions</div>
+            <div class="progress" style="height: 4px;">
+              <div class="progress-bar" role="progressbar" style="width: 60%"></div>
+            </div>
+            <div class="d-flex justify-content-between mt-2 smaller text-muted">
+              <span>Sampling: 50 Units</span>
+              <span>60% Complete</span>
+            </div>
+          </div>
+          <div class="card border-0 bg-light p-3 rounded-3 opacity-75">
+            <div class="d-flex justify-content-between mb-2">
+              <span class="fw-bold small">Batch #BT-2026-992</span>
+              <span class="badge bg-secondary rounded-pill">Apparel</span>
+            </div>
+            <div class="smaller text-muted">Supplier: FastFab Textiles</div>
+            <div class="mt-2 smaller text-warning fw-bold">Awaiting Lab Prep</div>
+          </div>
+        </div>
+        <hr class="my-4">
+        <h6 class="fw-bold mb-3">Recent Laboratory Reports</h6>
+        <div class="d-flex flex-column gap-2">
+          <a href="#" class="text-decoration-none small d-flex align-items-center">
+            <i class="bi bi-file-earmark-pdf text-danger me-2"></i>Lab_Report_9901.pdf
+          </a>
+          <a href="#" class="text-decoration-none small d-flex align-items-center">
+            <i class="bi bi-file-earmark-pdf text-danger me-2"></i>Lab_Report_9898.pdf
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed Inspection Table -->
+  <div class="card border-0 shadow-sm rounded-4 p-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <h5 class="fw-bold mb-0">Recent Inspection Results</h5>
+      <button class="btn btn-light btn-sm rounded-pill" (click)="exportInspectionHistory()">Export History</button>
+    </div>
+    <div class="table-responsive">
+      <table class="table premium-table">
+        <thead>
+          <tr>
+            <th>Inspection ID</th>
+            <th>Product</th>
+            <th>Batch ID</th>
+            <th>Result</th>
+            <th>Defects</th>
+            <th>Inspector</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="fw-bold">#INS-2026-001</td>
+            <td>Intel Core i9 14th Gen</td>
+            <td>BT-9901</td>
+            <td><span class="badge bg-success-subtle text-success rounded-pill">PASSED</span></td>
+            <td>0/50</td>
+            <td>MD. Mahbub</td>
+            <td>May 15, 2026</td>
+          </tr>
+          <tr>
+            <td class="fw-bold">#INS-2026-002</td>
+            <td>Steel Beam H-Type</td>
+            <td>BT-9905</td>
+            <td><span class="badge bg-danger-subtle text-danger rounded-pill">REJECTED</span></td>
+            <td>12/20</td>
+            <td>MD. Mahbub</td>
+            <td>May 14, 2026</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

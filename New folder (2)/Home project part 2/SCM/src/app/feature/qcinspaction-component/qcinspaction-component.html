@@ -1,0 +1,182 @@
+<div class="container-fluid my-4">
+  <!-- Header Section -->
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <h2 class="text-primary fw-bold mb-0">Quality Control Inspections</h2>
+    
+    <!-- পরিবর্তন করা বাটন: এটি ফর্মের অবস্থার উপর ভিত্তি করে কালার এবং নাম পরিবর্তন করবে -->
+    <button class="btn d-flex align-items-center gap-2" 
+            [ngClass]="showForm ? 'btn-secondary' : 'btn-primary'"
+            (click)="showForm ? reset() : openForm()">
+      <i class="bi" [ngClass]="showForm ? 'bi-eye-slash' : 'bi-plus-lg'"></i> 
+      {{ showForm ? 'Hide Form' : 'New Inspection' }}
+    </button>
+  </div>
+
+  <!-- FORM SECTION (Shown only when showForm is true) -->
+  <div *ngIf="showForm" class="card shadow-sm border-0 mb-4 animate-fade-in">
+    <div class="card-header bg-light py-3">
+      <h5 class="card-title mb-0 text-secondary fw-semibold">
+        {{ isEditMode ? 'Edit Inspection Record' : 'Create New Inspection Record' }}
+      </h5>
+    </div>
+    <div class="card-body p-4">
+      <form #qcForm="ngForm" (ngSubmit)="isEditMode ? update() : add()">
+        <div class="row g-3">
+          
+          <!-- GRN Selection -->
+          <div class="col-md-4">
+            <label class="form-label fw-medium">Goods Received Note (GRN)</label>
+            <select class="form-select" name="grnId" [(ngModel)]="qc.grnId" required>
+              <option value="" disabled hidden>Select GRN...</option>
+              <option *ngFor="let grn of grns" [value]="grn.id">{{ grn.grnNumber }}</option>
+            </select>
+          </div>
+
+          <!-- Product Selection -->
+          <div class="col-md-4">
+            <label class="form-label fw-medium">Product</label>
+            <select class="form-select" name="productId" [(ngModel)]="qc.productId" required>
+              <option value="" disabled hidden>Select Product...</option>
+              <option *ngFor="let p of products" [value]="p.id">{{ p.name }}</option>
+            </select>
+          </div>
+
+          <!-- Inspector Selection -->
+          <div class="col-md-4">
+            <label class="form-label fw-medium">Inspected By</label>
+            <select class="form-select" name="inspectedBy" [(ngModel)]="qc.inspectedBy" required>
+              <option value="" disabled hidden>Select Inspector...</option>
+              <option *ngFor="let u of qcInspectors" [value]="u.id">{{ u.name }}</option>
+            </select>
+          </div>
+
+          <!-- Inspection Type -->
+          <div class="col-md-4">
+            <label class="form-label fw-medium">Inspection Type</label>
+            <input type="text" class="form-control" name="inspectionType" [(ngModel)]="qc.inspectionType" placeholder="e.g. Visual, Chemical, Dimensional" required>
+          </div>
+
+          <!-- Sample Size -->
+          <div class="col-md-4">
+            <label class="form-label fw-medium">Sample Size</label>
+            <input type="number" class="form-control" name="sampleSize" [(ngModel)]="qc.sampleSize" min="0" required>
+          </div>
+
+          <!-- Defects Found -->
+          <div class="col-md-4">
+            <label class="form-label fw-medium">Defects Found</label>
+            <input type="number" class="form-control" name="defectsFound" [(ngModel)]="qc.defectsFound" min="0" required>
+          </div>
+
+          <!-- Inspection Result Status -->
+          <div class="col-md-4">
+            <label class="form-label fw-medium">Inspection Result</label>
+            <select class="form-select" name="result" [(ngModel)]="qc.result" required>
+              <option value="" disabled hidden>Select Result...</option>
+              <option value="PASSED">Passed</option>
+              <option value="FAILED">Failed</option>
+              <option value="PENDING">Pending</option>
+            </select>
+          </div>
+
+          <!-- Certificate Ref -->
+          <div class="col-md-4">
+            <label class="form-label fw-medium">Certificate Reference</label>
+            <input type="text" class="form-control" name="certificateRef" [(ngModel)]="qc.certificateRef" placeholder="Ref Number">
+          </div>
+
+          <!-- Inspection Date -->
+          <div class="col-md-4">
+            <label class="form-label fw-medium">Inspection Date</label>
+            <input type="date" class="form-control" name="inspectedAt" [(ngModel)]="qc.inspectedAt" required>
+          </div>
+
+          <!-- Lab Test Report Link/Text -->
+          <div class="col-md-12">
+            <label class="form-label fw-medium">Lab Test Report</label>
+            <input type="text" class="form-control" name="labTestReport" [(ngModel)]="qc.labTestReport" placeholder="URL or Document Reference Summary">
+          </div>
+
+          <!-- Defect Description -->
+          <div class="col-md-12">
+            <label class="form-label fw-medium">Defect Description</label>
+            <textarea class="form-control" name="defectDescription" [(ngModel)]="qc.defectDescription" rows="2" placeholder="Describe detected faults/issues (if any)..."></textarea>
+          </div>
+
+        </div>
+
+        <!-- Form Action Buttons -->
+        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+          <button type="button" class="btn btn-outline-secondary px-4" (click)="reset()">Cancel</button>
+          <button type="submit" class="btn btn-success px-4" [disabled]="!qcForm.form.valid">
+            {{ isEditMode ? 'Update Record' : 'Save Record' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TABLE SECTION (List View) -->
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover table-striped align-middle mb-0">
+          <thead class="table-dark text-uppercase fs-7">
+            <tr>
+              <th scope="col" class="ps-3">GRN</th>
+              <th scope="col">Product</th>
+              <th scope="col">Type</th>
+              <th scope="col" class="text-center">Sample Size</th>
+              <th scope="col" class="text-center">Defects</th>
+              <th scope="col">Result</th>
+              <th scope="col">Inspector</th>
+              <th scope="col">Date</th>
+              <th scope="col" class="text-end pe-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="inspections.length === 0">
+              <td colspan="9" class="text-center py-5 text-muted">
+                <i class="bi bi-inbox fs-2 d-block mb-2"></i> No QC Inspection logs discovered.
+              </td>
+            </tr>
+            
+            <tr *ngFor="let item of inspections">
+              <td class="ps-3 fw-medium text-secondary">{{ getGRNName(item.grnId) }}</td>
+              <td><span class="fw-semibold text-dark">{{ getProductName(item.productId) }}</span></td>
+              <td>{{ item.inspectionType }}</td>
+              <td class="text-center">{{ item.sampleSize }}</td>
+              <td class="text-center">
+                <span [class]="item.defectsFound > 0 ? 'badge bg-danger-subtle text-danger border border-danger-subtle' : 'text-muted'">
+                  {{ item.defectsFound }}
+                </span>
+              </td>
+              <td>
+                <span class="badge rounded-pill px-2.5 py-1.5" 
+                      [ngClass]="{
+                        'bg-success-subtle text-success border border-success-subtle': item.result === 'PASSED',
+                        'bg-danger-subtle text-danger border border-danger-subtle': item.result === 'FAILED',
+                        'bg-warning-subtle text-warning border border-warning-subtle': item.result !== 'PASSED' && item.result !== 'FAILED'
+                      }">
+                  {{ item.result || 'UNKNOWN' }}
+                </span>
+              </td>
+              <td>{{ getUserName(item.inspectedBy) }}</td>
+              <td class="text-nowrap">{{ item.inspectedAt | date:'mediumDate' }}</td>
+              <td class="text-end pe-3">
+                <div class="btn-group btn-group-sm" role="group">
+                  <button type="button" class="btn btn-outline-primary" title="Edit" (click)="edit(item)">
+                    <i class="bi bi-pencil-fill">Edit</i>
+                  </button>
+                  <button type="button" class="btn btn-outline-danger" title="Delete" (click)="delete(item.id)">
+                    <i class="bi bi-trash-fill">Delete</i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

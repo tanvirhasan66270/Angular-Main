@@ -1,0 +1,42 @@
+/* ডিজাইন ১ এর জন্য */
+.btn-white {
+    background-color: #fff;
+    border: none;
+    font-size: 0.8rem;
+}
+
+.btn-white:hover {
+    background-color: #f8f9fa;
+}
+
+/* ডিজাইন ২ এর জন্য (Subtle Colors) */
+.btn-primary-subtle {
+    background-color: #e7f1ff;
+    color: #0d6efd;
+    border: none;
+}
+
+.btn-primary-subtle:hover {
+    background-color: #0d6efd;
+    color: #fff;
+}
+
+.btn-danger-subtle {
+    background-color: #f8d7da;
+    color: #dc3545;
+    border: none;
+}
+
+.btn-danger-subtle:hover {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+/* আইকন এনিমেশন */
+.btn i {
+    transition: transform 0.2s;
+}
+
+.btn:hover i {
+    transform: scale(1.1);
+}

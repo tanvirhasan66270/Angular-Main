@@ -1,0 +1,397 @@
+<div class="container-fluid px-4 mt-4">
+  <!-- ================= HEADER ================= -->
+  <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
+    <div>
+      <h1 class="h3 fw-bold text-dark mb-1">
+        <i class="bi bi-people-fill text-primary me-2"></i>
+        User Administration
+      </h1>
+
+      <p class="text-muted mb-0 small">
+        Manage user accounts, permissions, security roles and login access.
+      </p>
+    </div>
+
+    <button
+      class="btn btn-primary shadow-sm px-4 py-2 rounded-3"
+      data-bs-toggle="modal"
+      data-bs-target="#userModal"
+      (click)="resetForm()"
+    >
+      <i class="bi bi-person-plus-fill me-2"></i>
+      Add New User
+    </button>
+  </div>
+
+  <!-- ================= CARD ================= -->
+  <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+    <!-- ================= CARD HEADER ================= -->
+    <div class="card-header bg-white border-bottom py-3">
+      <div class="row align-items-center g-3">
+        <div class="col-md-6">
+          <h5 class="fw-bold text-primary mb-0">
+            <i class="bi bi-shield-lock-fill me-2"></i>
+            Personnel Directory
+          </h5>
+        </div>
+
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text bg-light border-0">
+              <i class="bi bi-search"></i>
+            </span>
+
+            <input
+              type="text"
+              class="form-control border-0 bg-light shadow-none"
+              placeholder="Search user by name, email or role..."
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= TABLE ================= -->
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table align-middle table-hover mb-0">
+          <!-- ================= TABLE HEAD ================= -->
+          <thead class="bg-light text-uppercase small text-muted">
+            <tr>
+              <th class="ps-4 py-3">Profile</th>
+
+              <th>Phone</th>
+
+              <th>Role</th>
+
+              <th>Status</th>
+
+              <th>Created</th>
+
+              <th>Last Login</th>
+
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+
+          <!-- ================= TABLE BODY ================= -->
+          <tbody>
+            <tr *ngFor="let user of users">
+              <!-- ================= PROFILE ================= -->
+              <td class="ps-4">
+                <div class="d-flex align-items-center">
+                  <div
+                    class="rounded-circle bg-primary text-white fw-bold d-flex align-items-center justify-content-center me-3 shadow-sm"
+                    style="width: 45px; height: 45px; font-size: 18px"
+                  >
+                    {{ user.name.charAt(0) }}
+                  </div>
+
+                  <div>
+                    <div class="fw-bold text-dark">
+                      {{ user.name }}
+                    </div>
+
+                    <div class="text-muted small">
+                      {{ user.email }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+
+              <!-- ================= PHONE ================= -->
+              <td>
+                <span class="fw-semibold">
+                  {{ user.number }}
+                </span>
+              </td>
+
+              <!-- ================= ROLE ================= -->
+              <td>
+                <span
+                  class="badge rounded-pill px-3 py-2 fw-semibold"
+                  [ngClass]="{
+                    'bg-primary-subtle text-primary': user.role === 'ADMIN',
+
+                    'bg-success-subtle text-success': user.role === 'MANAGER',
+
+                    'bg-warning-subtle text-warning': user.role === 'DRIVER',
+
+                    'bg-info-subtle text-info':
+                      user.role === 'STORE_KEEPER' || user.role === 'PROCUREMENT',
+
+                    'bg-danger-subtle text-danger': user.role === 'QC_INSPECTOR',
+
+                    'bg-secondary-subtle text-secondary':
+                      user.role === 'SCM_MANAGER' || user.role === 'COMMERCIAL_OFFICER',
+
+                    'bg-dark text-white': user.role === 'LOGISTICS_OFFICER',
+
+                    'bg-light text-dark border': user.role === 'SUPPLIER',
+
+                    'bg-success text-white': user.role === 'CUSTOMER',
+                  }"
+                >
+                  {{ user.role }}
+                </span>
+              </td>
+
+              <!-- ================= STATUS ================= -->
+              <td>
+                <span
+                  class="badge rounded-pill px-3 py-2"
+                  [ngClass]="
+                    user.isActive
+                      ? 'bg-success-subtle text-success'
+                      : 'bg-danger-subtle text-danger'
+                  "
+                >
+                  <i
+                    class="bi me-1"
+                    [ngClass]="user.isActive ? 'bi-check-circle-fill' : 'bi-x-circle-fill'"
+                  ></i>
+
+                  {{ user.isActive ? 'Active' : 'Inactive' }}
+                </span>
+              </td>
+
+              <!-- ================= CREATED ================= -->
+              <td class="small text-muted">
+                {{ user.createdAt | date: 'mediumDate' }}
+              </td>
+
+              <!-- ================= LAST LOGIN ================= -->
+              <td class="small text-muted">
+                <i class="bi bi-clock-history me-1"></i>
+
+                {{ user.lastLogin ? (user.lastLogin | date: 'short') : 'Never' }}
+              </td>
+
+              <!-- ================= ACTIONS ================= -->
+              <td class="text-center">
+                <div class="d-flex justify-content-center gap-2">
+                  <!-- EDIT -->
+                  <button
+                    class="btn btn-sm btn-warning rounded-pill px-3 shadow-sm"
+                    (click)="editUser(user)"
+                    data-bs-toggle="modal"
+                    data-bs-target="#userModal"
+                  >
+                    <i class="bi bi-pencil-square me-1"></i>
+                    Edit
+                  </button>
+
+                  <!-- DELETE -->
+                  <button
+                    class="btn btn-sm btn-danger rounded-pill px-3 shadow-sm"
+                    (click)="deleteUser(user.id)"
+                  >
+                    <i class="bi bi-trash-fill me-1"></i>
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- ================= EMPTY ================= -->
+            <tr *ngIf="users.length === 0">
+              <td colspan="7" class="text-center py-5 text-muted">
+                <i class="bi bi-inbox display-6 d-block mb-3"></i>
+
+                No Users Found
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================== -->
+<!-- ================= USER MODAL ======================== -->
+<!-- ===================================================== -->
+
+<div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+      <!-- ================= MODAL HEADER ================= -->
+      <div class="modal-header bg-dark text-white p-4 border-0">
+        <h5 class="modal-title fw-bold">
+          <i class="bi bi-person-gear me-2"></i>
+
+          {{ currentUser.id ? 'Update User Information' : 'Create New User' }}
+        </h5>
+
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          (click)="resetForm()"
+        ></button>
+      </div>
+
+      <!-- ================= MODAL BODY ================= -->
+      <div class="modal-body bg-light p-4">
+        <form #userForm="ngForm" class="row g-4">
+          <!-- ================= NAME ================= -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold"> Full Name </label>
+
+            <input
+              type="text"
+              class="form-control form-control-lg"
+              name="name"
+              [(ngModel)]="currentUser.name"
+              required
+              placeholder="Enter full name"
+            />
+          </div>
+
+          <!-- ================= EMAIL ================= -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold"> Email Address </label>
+
+            <input
+              type="email"
+              class="form-control form-control-lg"
+              name="email"
+              [(ngModel)]="currentUser.email"
+              required
+              placeholder="example@company.com"
+            />
+          </div>
+
+          <!-- ================= PHONE ================= -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold"> Phone Number </label>
+
+            <input
+              type="number"
+              class="form-control form-control-lg"
+              name="number"
+              [(ngModel)]="currentUser.number"
+              placeholder="01XXXXXXXXX"
+            />
+          </div>
+
+          <!-- ================= ROLE ================= -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold"> User Role </label>
+
+            <select class="form-select form-select-lg" name="role" [(ngModel)]="currentUser.role">
+              <option value="ADMIN">Administrator</option>
+
+              <option value="SCM_MANAGER">SCM Manager</option>
+
+              <option value="COMMERCIAL_OFFICER">Commercial Officer</option>
+
+              <option value="MANAGER">Store Manager</option>
+
+              <option value="PROCUREMENT">Procurement Officer</option>
+
+              <option value="STORE_KEEPER">Store Keeper</option>
+
+              <option value="QC_INSPECTOR">QC Inspector</option>
+
+              <option value="DRIVER">Driver</option>
+
+              <option value="LOGISTICS_OFFICER">Logistics Officer</option>
+
+              <option value="SUPPLIER">Supplier</option>
+
+              <option value="CUSTOMER">Customer</option>
+            </select>
+          </div>
+
+          <!-- ================= PASSWORD ================= -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold"> Password </label>
+
+            <div class="input-group">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                class="form-control form-control-lg"
+                name="password"
+                [(ngModel)]="currentUser.password"
+                placeholder="Enter password"
+              />
+
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="showPassword = !showPassword"
+              >
+                <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- ================= CONFIRM PASSWORD ================= -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold"> Confirm Password </label>
+
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              class="form-control form-control-lg"
+              name="confirmPassword"
+              [(ngModel)]="confirmPassword"
+              placeholder="Re-enter password"
+            />
+          </div>
+
+          <!-- ================= PASSWORD VALIDATION ================= -->
+          <div class="col-12" *ngIf="confirmPassword && currentUser.password !== confirmPassword">
+            <div class="alert alert-danger py-2 mb-0">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+              Passwords do not match.
+            </div>
+          </div>
+
+          <!-- ================= STATUS ================= -->
+          <div class="col-12">
+            <div class="form-check form-switch d-flex align-items-center gap-3">
+              <input
+                class="form-check-input fs-5"
+                type="checkbox"
+                name="isActive"
+                [(ngModel)]="currentUser.isActive"
+              />
+
+              <label class="form-check-label fw-semibold">
+                {{ currentUser.isActive ? 'Account Active' : 'Account Disabled' }}
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- ================= MODAL FOOTER ================= -->
+      <div class="modal-footer border-0 bg-white p-4">
+        <button
+          type="button"
+          class="btn btn-light border px-4"
+          data-bs-dismiss="modal"
+          (click)="resetForm()"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-primary px-5 fw-bold shadow"
+          (click)="saveUser()"
+          [disabled]="!userForm.valid || currentUser.password !== confirmPassword"
+        >
+          <i
+            class="bi me-2"
+            [ngClass]="currentUser.id ? 'bi-check-circle-fill' : 'bi-save-fill'"
+          ></i>
+
+          {{ currentUser.id ? 'Update User' : 'Save User' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

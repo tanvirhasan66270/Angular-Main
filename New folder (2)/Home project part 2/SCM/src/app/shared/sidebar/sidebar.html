@@ -1,0 +1,232 @@
+<aside class="sidebar d-flex flex-column animate-slide-up" *ngIf="user">
+  <div class="p-4 mb-2">
+    <div class="d-flex align-items-center gap-2">
+      <div class="bg-primary bg-opacity-10 p-2 rounded-3">
+        <i class="bi bi-box-seam-fill text-primary fs-4"></i>
+      </div>
+      <span class="fs-4 fw-bold tracking-tight text-primary">SCM Pro</span>
+    </div>
+  </div>
+
+  <div class="flex-grow-1 overflow-auto px-3 custom-scrollbar">
+
+    <!-- Section: Control Center (Admin + Directors + All Employees) -->
+    <div class="mb-4">
+      <small class="text-uppercase text-muted fw-bold small px-2">Control Center</small>
+      <div class="nav flex-column mt-2">
+        <!-- Admin-only strategic dashboard -->
+        <a class="nav-link" routerLink="/admin-dashboard" routerLinkActive="active" *ngIf="isAdmin()">
+          <i class="bi bi-speedometer2 text-primary"></i> Admin Dashboard
+        </a>
+        <a class="nav-link" routerLink="/analytics" routerLinkActive="active" *ngIf="isAdmin() || isDirector()">
+          <i class="bi bi-pie-chart text-primary"></i> Business Intelligence
+        </a>
+        <a class="nav-link" routerLink="/strategic-dashboard" routerLinkActive="active" *ngIf="isAdmin() || isDirector()">
+          <i class="bi bi-graph-up-arrow text-indigo"></i> Strategic Insights
+        </a>
+        <a class="nav-link" routerLink="/employee-dashboard" routerLinkActive="active" *ngIf="isEmployee() && !isAdmin()">
+          <i class="bi bi-grid-1x2"></i> Operations Board
+        </a>
+      </div>
+    </div>
+
+    <!-- Section: Procurement -->
+    <div class="mb-4" *ngIf="isAdmin() || isProcurement()">
+      <small class="text-uppercase text-muted fw-bold small px-2">Procurement</small>
+      <div class="nav flex-column mt-2">
+        <a class="nav-link" routerLink="/procurement-dashboard" routerLinkActive="active" *ngIf="isAdmin()">
+          <i class="bi bi-bar-chart-line text-success"></i> Procurement Dashboard
+        </a>
+        <a class="nav-link" routerLink="/purchase-requisition" routerLinkActive="active">
+          <i class="bi bi-file-earmark-plus"></i> Requisitions (PR)
+        </a>
+        <a class="nav-link" routerLink="/purchase-order" routerLinkActive="active">
+          <i class="bi bi-cart-check"></i> Purchase Orders (PO)
+        </a>
+        <a class="nav-link" routerLink="/po-line-item" routerLinkActive="active">
+          <i class="bi bi-list-ol"></i> PO Line Items
+        </a>
+        <a class="nav-link" routerLink="/quotation" routerLinkActive="active">
+          <i class="bi bi-chat-quote"></i> Quotations
+        </a>
+        <a class="nav-link" routerLink="/supplier" routerLinkActive="active">
+          <i class="bi bi-person-badge"></i> Vendor Network
+        </a>
+      </div>
+    </div>
+
+    <!-- Section: Inventory Hub -->
+    <div class="mb-4" *ngIf="isAdmin() || isStore()">
+      <small class="text-uppercase text-muted fw-bold small px-2">Inventory Hub</small>
+      <div class="nav flex-column mt-2">
+        <a class="nav-link" routerLink="/warehousing-dashboard" routerLinkActive="active" *ngIf="isAdmin()">
+          <i class="bi bi-layout-three-columns text-warning"></i> Warehouse Dashboard
+        </a>
+        <a class="nav-link" routerLink="/warehouse" routerLinkActive="active">
+          <i class="bi bi-building"></i> Warehouses
+        </a>
+        <a class="nav-link" routerLink="/product" routerLinkActive="active">
+          <i class="bi bi-box-seam"></i> Item Master
+        </a>
+        <a class="nav-link" routerLink="/category" routerLinkActive="active">
+          <i class="bi bi-tags"></i> Categories
+        </a>
+        <a class="nav-link" routerLink="/inventorie" routerLinkActive="active">
+          <i class="bi bi-stack"></i> Stock Registry
+        </a>
+        <a class="nav-link" routerLink="/goods-received-note" routerLinkActive="active">
+          <i class="bi bi-journal-arrow-down"></i> Goods Receipt (GRN)
+        </a>
+        <a class="nav-link" routerLink="/grn-line-item" routerLinkActive="active">
+          <i class="bi bi-list-ul"></i> GRN Line Items
+        </a>
+        <a class="nav-link" routerLink="/stock-movement" routerLinkActive="active">
+          <i class="bi bi-arrow-left-right"></i> Stock Movements
+        </a>
+        <a class="nav-link" routerLink="/stock-audit" routerLinkActive="active">
+          <i class="bi bi-clipboard-check"></i> Stock Audits
+        </a>
+        <a class="nav-link" routerLink="/inventory-reservation" routerLinkActive="active">
+          <i class="bi bi-lock"></i> Reservations
+        </a>
+      </div>
+    </div>
+
+    <!-- Section: Logistics Command -->
+    <div class="mb-4" *ngIf="isAdmin() || isLogistics()">
+      <small class="text-uppercase text-muted fw-bold small px-2">Logistics Command</small>
+      <div class="nav flex-column mt-2">
+        <a class="nav-link" routerLink="/logistics-dashboard" routerLinkActive="active" *ngIf="isAdmin()">
+          <i class="bi bi-truck text-info"></i> Logistics Dashboard
+        </a>
+        <a class="nav-link" routerLink="/shipment-tracking" routerLinkActive="active">
+          <i class="bi bi-globe-americas"></i> Global Tracking
+        </a>
+        <a class="nav-link" routerLink="/vehicle" routerLinkActive="active">
+          <i class="bi bi-truck-flatbed"></i> Fleet Management
+        </a>
+        <a class="nav-link" routerLink="/shipment" routerLinkActive="active">
+          <i class="bi bi-send-check"></i> Dispatch Control
+        </a>
+        <a class="nav-link" routerLink="/delivery-trip" routerLinkActive="active">
+          <i class="bi bi-signpost-2"></i> Delivery Trips
+        </a>
+      </div>
+    </div>
+
+    <!-- Section: Quality & Compliance -->
+    <div class="mb-4" *ngIf="isAdmin() || isQC()">
+      <small class="text-uppercase text-muted fw-bold small px-2">Compliance</small>
+      <div class="nav flex-column mt-2">
+        <a class="nav-link" routerLink="/qc-dashboard" routerLinkActive="active" *ngIf="isAdmin()">
+          <i class="bi bi-shield-check text-success"></i> QC Dashboard
+        </a>
+        <a class="nav-link" routerLink="/qc-inspection" routerLinkActive="active">
+          <i class="bi bi-shield-check text-emerald"></i> Lab Inspections
+        </a>
+        <a class="nav-link" routerLink="/qc-checklist" routerLinkActive="active">
+          <i class="bi bi-list-check"></i> Audit Checklists
+        </a>
+      </div>
+    </div>
+
+    <!-- Section: Commercial & Finance -->
+    <div class="mb-4" *ngIf="isAdmin() || isAccounts()">
+      <small class="text-uppercase text-muted fw-bold small px-2">Commercial</small>
+      <div class="nav flex-column mt-2">
+        <a class="nav-link" routerLink="/finance-dashboard" routerLinkActive="active" *ngIf="isAdmin()">
+          <i class="bi bi-currency-dollar text-warning"></i> Finance Dashboard
+        </a>
+        <a class="nav-link" routerLink="/invoice" routerLinkActive="active">
+          <i class="bi bi-receipt-cutoff text-warning"></i> Invoicing (AP/AR)
+        </a>
+        <a class="nav-link" routerLink="/letter-of-credit" routerLinkActive="active">
+          <i class="bi bi-bank"></i> Trade Finance (LC)
+        </a>
+        <a class="nav-link" routerLink="/payment" routerLinkActive="active">
+          <i class="bi bi-cash-stack"></i> Disbursements
+        </a>
+        <a class="nav-link" routerLink="/buyer-order" routerLinkActive="active">
+          <i class="bi bi-bag-check"></i> Buyer Orders
+        </a>
+      </div>
+    </div>
+
+    <!-- Section: Customer Orders -->
+    <div class="mb-4" *ngIf="isAdmin()">
+      <small class="text-uppercase text-muted fw-bold small px-2">Customer Orders</small>
+      <div class="nav flex-column mt-2">
+        <a class="nav-link" routerLink="/customer-portal" routerLinkActive="active">
+          <i class="bi bi-people-fill text-primary"></i> Customer Portal
+        </a>
+        <a class="nav-link" routerLink="/customer-order" routerLinkActive="active">
+          <i class="bi bi-bag-heart"></i> Customer Orders
+        </a>
+        <a class="nav-link" routerLink="/order-line-item" routerLinkActive="active">
+          <i class="bi bi-list-ol"></i> Order Line Items
+        </a>
+      </div>
+    </div>
+
+    <!-- Section: Customer Portal (CUSTOMER role) -->
+    <div class="mb-4" *ngIf="isCustomer()">
+      <small class="text-uppercase text-muted fw-bold small px-2">Client Services</small>
+      <div class="nav flex-column mt-2">
+        <a class="nav-link" routerLink="/customer-order" routerLinkActive="active">
+          <i class="bi bi-bag-check"></i> My Orders
+        </a>
+        <a class="nav-link" routerLink="/shipment-tracking" routerLinkActive="active">
+          <i class="bi bi-truck"></i> Live Delivery
+        </a>
+      </div>
+    </div>
+
+    <!-- Section: Driver App -->
+    <div class="mb-4" *ngIf="isDriver()">
+      <small class="text-uppercase text-muted fw-bold small px-2">Field Ops</small>
+      <div class="nav flex-column mt-2">
+        <a class="nav-link" routerLink="/delivery-trip" routerLinkActive="active">
+          <i class="bi bi-signpost-2"></i> Active Trips
+        </a>
+      </div>
+    </div>
+
+    <!-- Section: System Admin -->
+    <div class="mb-4" *ngIf="isAdmin()">
+      <small class="text-uppercase text-muted fw-bold small px-2">System Admin</small>
+      <div class="nav flex-column mt-2">
+        <a class="nav-link" routerLink="/user" routerLinkActive="active">
+          <i class="bi bi-people"></i> Staff Directory
+        </a>
+        <a class="nav-link" routerLink="/activity-log" routerLinkActive="active">
+          <i class="bi bi-clock-history"></i> Audit Trail
+        </a>
+        <a class="nav-link" routerLink="/daily-report" routerLinkActive="active">
+          <i class="bi bi-file-earmark-bar-graph"></i> Daily Reports
+        </a>
+        <a class="nav-link" routerLink="/notification" routerLinkActive="active">
+          <i class="bi bi-bell"></i> Notifications
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- User Bottom Bar -->
+  <div class="mt-auto p-3 border-top bg-light bg-opacity-50">
+    <div class="d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-3">
+        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
+          {{ user.name.charAt(0) }}
+        </div>
+        <div class="overflow-hidden">
+          <div class="fw-bold text-dark text-truncate">{{ user.name }}</div>
+          <div class="text-muted small text-truncate">{{ user.role }}</div>
+        </div>
+      </div>
+      <button class="btn btn-sm btn-outline-danger border-0 rounded-circle" (click)="logout()" title="Logout">
+        <i class="bi bi-power fs-5"></i>
+      </button>
+    </div>
+  </div>
+</aside>

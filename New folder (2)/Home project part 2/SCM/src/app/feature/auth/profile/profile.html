@@ -1,0 +1,67 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card border-0 shadow-lg rounded-4 overflow-hidden" *ngIf="user">
+        <div class="card-header bg-primary text-white p-4 text-center position-relative">
+          <div class="rounded-circle bg-white text-primary fw-bold d-inline-flex align-items-center justify-content-center mb-3 shadow" style="width: 100px; height: 100px; font-size: 40px;">
+            {{ user.name.charAt(0) }}
+          </div>
+          <h2 class="fw-bold mb-0">{{ user.name }}</h2>
+          <span class="badge bg-white text-primary rounded-pill px-3 py-2 mt-2">{{ user.role }}</span>
+        </div>
+        
+        <div class="card-body p-4 p-md-5">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold text-dark mb-0"><i class="bi bi-person-lines-fill me-2 text-primary"></i>Profile Information</h4>
+            <button class="btn btn-sm" [class.btn-outline-primary]="!isEditing" [class.btn-danger]="isEditing" (click)="toggleEdit()">
+              <i class="bi" [class.bi-pencil]="!isEditing" [class.bi-x-lg]="isEditing"></i>
+              {{ isEditing ? 'Cancel' : 'Edit Profile' }}
+            </button>
+          </div>
+
+          <form (ngSubmit)="updateProfile()" #profileForm="ngForm">
+            <div class="row g-4">
+              <div class="col-md-6">
+                <label class="form-label text-muted small fw-bold text-uppercase">Full Name</label>
+                <input type="text" name="name" [(ngModel)]="user.name" class="form-control form-control-lg border-0 bg-light" [disabled]="!isEditing" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted small fw-bold text-uppercase">Email Address</label>
+                <input type="email" name="email" [(ngModel)]="user.email" class="form-control form-control-lg border-0 bg-light" disabled>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted small fw-bold text-uppercase">Phone Number</label>
+                <input type="number" name="number" [(ngModel)]="user.number" class="form-control form-control-lg border-0 bg-light" [disabled]="!isEditing" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted small fw-bold text-uppercase">Account Status</label>
+                <div class="py-2">
+                  <span class="badge" [class.bg-success]="user.isActive" [class.bg-danger]="!user.isActive">
+                    {{ user.isActive ? 'Active' : 'Disabled' }}
+                  </span>
+                </div>
+              </div>
+              
+              <div class="col-12 mt-4" *ngIf="isEditing">
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-primary btn-lg fw-bold shadow" [disabled]="!profileForm.form.valid">
+                    Save Changes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="card-footer bg-light p-4 text-center border-0">
+          <small class="text-muted">Account Created: {{ user.createdAt | date:'mediumDate' }}</small>
+        </div>
+      </div>
+
+      <div class="text-center py-5" *ngIf="!user">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="mt-3 text-muted">Loading profile...</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,396 @@
+<div class="container-fluid px-4 mt-4">
+  <!-- Header Section -->
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h1 class="h3 mb-1 text-dark fw-bold">Billing & Financial Control</h1>
+      <p class="text-muted small mb-0">
+        Manage complex invoices, tax calculations, and multi-entity links (PO, Order, Supplier).
+      </p>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-secondary shadow-sm px-3 bg-white" (click)="generateInvoiceReport()">
+        <i class="bi bi-file-earmark-spreadsheet me-2"></i> Report
+      </button>
+      <button
+        class="btn btn-primary shadow-sm px-4 fw-bold"
+        data-bs-toggle="modal"
+        data-bs-target="#invoiceModal"
+        (click)="reset()"
+      >
+        <i class="bi bi-plus-lg me-2"></i> Create Invoice
+      </button>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm p-3 bg-white border-start border-primary border-4">
+        <h6 class="text-muted small text-uppercase fw-bold">Total Invoices</h6>
+        <h3 class="fw-bold mb-0 text-primary">{{ invoices.length }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Table Registry -->
+  <div class="card shadow-sm border-0">
+    <div
+      class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center"
+    >
+      <h6 class="m-0 fw-bold text-dark"><i class="bi bi-table me-2"></i>Invoice Registry</h6>
+      <div class="search-box w-25">
+        <input
+          type="text"
+          class="form-control form-control-sm bg-light"
+          placeholder="Search invoices..."
+        />
+      </div>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="bg-light text-secondary small fw-bold text-uppercase">
+            <tr>
+              <th class="ps-4">Inv # & Date</th>
+              <th>Entity Links</th>
+              <th>Issued To/By</th>
+              <th>Amounts</th>
+              <th>Due & Delivery</th>
+              <th>Status</th>
+              <th class="text-center">Quick Actions</th>
+              <th class="text-center">Manage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of invoices">
+              <td class="ps-4">
+                <!-- Invoice Number -->
+                <div class="fw-bold text-dark mb-0">{{ item.invoiceNumber || 'INV-NEW' }}</div>
+                <!-- ✅ Issued Date & Time -->
+                <div class="extra-small text-muted" style="font-size: 11px">
+                  <i class="bi bi-calendar-event me-1"></i>
+                  {{ item.issuedAt | date: 'medium' }}
+                </div>
+              </td>
+              <td>
+                <div class="small">
+                  <span class="text-muted">Order:</span> {{ getOrderName(item.orderId) }}
+                </div>
+                <div class="small">
+                  <span class="text-muted">Supplier:</span> {{ getSupplierName(item.supplierId) }}
+                </div>
+              </td>
+              <td>
+                <div class="small fw-bold">{{ item.issuedTo }}</div>
+                <div class="extra-small text-muted">Officer: {{ getUserName(item.issuedBy) }}</div>
+              </td>
+              <td>
+                <div class="fw-bold">{{ item.totalAmount | currency }}</div>
+                <div class="extra-small text-muted">Tax: {{ item.taxAmount | currency }}</div>
+              </td>
+              <td>
+                <div class="small text-danger">Due: {{ item.dueDate | date: 'shortDate' }}</div>
+                <div class="small text-success">
+                  Del: {{ item.deliveryDate | date: 'shortDate' }}
+                </div>
+              </td>
+
+              <td>
+                <span
+                  class="badge rounded-pill d-block mb-1"
+                  [ngClass]="{
+                    'bg-secondary-subtle text-secondary': item.status === 'DRAFT',
+                    'bg-success-subtle text-success': item.status === 'APPROVED',
+                    'bg-danger-subtle text-danger': item.status === 'REJECTED',
+                  }"
+                  >{{ item.status }}</span
+                >
+                <span class="badge rounded-pill d-block bg-info-subtle text-info">{{
+                  item.paymentStatus
+                }}</span>
+              </td>
+              <td class="text-center">
+                <div class="btn-group btn-group-sm">
+                  <button
+                    class="btn btn-outline-success"
+                    (click)="approve(item.id!)"
+                    title="Approve"
+                  >
+                    <i class="bi bi-check-circle">Approve</i>
+                  </button>
+                  <button class="btn btn-outline-danger" (click)="reject(item.id!)" title="Reject">
+                    <i class="bi bi-x-circle">Reject</i>
+                  </button>
+                  <button class="btn btn-outline-primary" (click)="markPaid(item.id!)" title="Paid">
+                    <i class="bi bi-cash-stack">Paid</i>
+                  </button>
+                </div>
+              </td>
+              <td class="text-center">
+                <div class="d-flex justify-content-center gap-1">
+                  <button
+                    class="btn btn-link text-success p-1 shadow-none"
+                    (click)="edit(item)"
+                    data-bs-toggle="modal"
+                    data-bs-target="#invoiceModal"
+                  >
+                    <i class="bi bi-pencil-square fs-5">Edit</i>
+                  </button>
+                  <button
+                    class="btn btn-link text-danger p-1 shadow-none"
+                    (click)="delete(item.id)"
+                  >
+                    <i class="bi bi-trash3 fs-5">Delete</i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- All-Field Comprehensive Modal -->
+<div class="modal fade" id="invoiceModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-dark text-white p-4">
+        <h5 class="modal-title fw-bold">
+          <i class="bi bi-receipt-cutoff me-2"></i> {{ isEditMode ? 'Modify' : 'New' }} Corporate
+          Invoice
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          (click)="reset()"
+        ></button>
+      </div>
+      <div class="modal-body p-4 bg-light">
+        <form #invoiceForm="ngForm" class="row g-3">
+          <!-- Identification & Meta -->
+          <!-- Modal Body Section -->
+          <div class="row g-3">
+            <!-- Invoice Number -->
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-secondary text-uppercase"
+                >Invoice No.</label
+              >
+              <input
+                type="text"
+                class="form-control shadow-sm"
+                name="invoiceNumber"
+                [(ngModel)]="invoice.invoiceNumber"
+                required
+                placeholder="e.g. INV-2026-001"
+              />
+            </div>
+
+            <!-- ✅ Issued At (Date and Time Field) -->
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-secondary text-uppercase"
+                >Issued Date & Time</label
+              >
+              <div class="input-group shadow-sm">
+                <span class="input-group-text bg-white border-end-0"
+                  ><i class="bi bi-clock"></i
+                ></span>
+                <input
+                  type="datetime-local"
+                  class="form-control border-start-0"
+                  name="issuedAt"
+                  [(ngModel)]="invoice.issuedAt"
+                  required
+                />
+              </div>
+              <div class="extra-small text-muted mt-1" style="font-size: 10px">
+                Select the official timestamp for this invoice.
+              </div>
+            </div>
+
+            <!-- ... বাকি ফিল্ডগুলো (OrderId, Amount, etc.) এখানে থাকবে ... -->
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small fw-bold">Customer Order (FK)</label>
+            <select class="form-select" name="orderId" [(ngModel)]="invoice.orderId" required>
+              <option *ngFor="let o of orders" [value]="o.id">{{ o.orderNumber }}</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small fw-bold">Purchase Order (FK)</label>
+            <select class="form-select" name="poId" [(ngModel)]="invoice.poId">
+              <option *ngFor="let po of purchaseOrders" [value]="po.id">{{ po.poNumber }}</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small fw-bold">Supplier Link (FK)</label>
+            <select class="form-select" name="supplierId" [(ngModel)]="invoice.supplierId">
+              <option *ngFor="let s of suppliers" [value]="s.id">{{ s.name }}</option>
+            </select>
+          </div>
+
+          <!-- Responsible Parties -->
+          <div class="col-md-6">
+            <label class="form-label small fw-bold">Issued To (Buyer Name)</label>
+            <input
+              type="text"
+              class="form-control"
+              name="issuedTo"
+              [(ngModel)]="invoice.issuedTo"
+              required
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Issued By</label>
+
+            <select
+              class="form-select shadow-sm"
+              [(ngModel)]="invoice.issuedBy"
+              name="issuedBy"
+              required
+            >
+              <option value="">Select Commercial Officer</option>
+
+              <option *ngFor="let u of commercialOfficers" [value]="u.id">
+                {{ u.name }}
+              </option>
+            </select>
+          </div>
+
+          <hr class="my-4 text-muted" />
+
+          <!-- Financials -->
+          <div class="col-md-4">
+            <div class="p-3 bg-white border rounded shadow-sm">
+              <label class="form-label small fw-bold text-primary">Subtotal Amount</label>
+              <input
+                type="number"
+                class="form-control form-control-lg fw-bold"
+                name="subtotal"
+                [(ngModel)]="invoice.subtotal"
+                (input)="calculateInvoice()"
+                required
+              />
+            </div>
+          </div>
+          <div class="col-md-4 text-center">
+            <div class="p-3">
+              <label class="form-label small fw-bold text-muted">Estimated Tax (10%)</label>
+              <h4 class="mb-0 text-secondary">{{ invoice.taxAmount | currency }}</h4>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-primary text-white border rounded shadow-sm text-center">
+              <label class="form-label small fw-bold text-white-50">Grand Total Payable</label>
+              <h3 class="fw-bold mb-0">{{ invoice.totalAmount | currency }}</h3>
+            </div>
+          </div>
+
+          <!-- Final Amount Field Section -->
+          <div class="col-md-4">
+            <label class="form-label small fw-bold text-primary text-uppercase"
+              >Final Amount (Payable)</label
+            >
+            <div class="input-group border border-primary border-2 rounded shadow-sm">
+              <!-- Currency Symbol -->
+              <span class="input-group-text bg-primary text-white border-0 fw-bold">
+                <i class="bi bi-currency-dollar me-1"></i> $
+              </span>
+
+              <!-- Main Amount Input -->
+              <input
+                type="number"
+                class="form-control fw-bold border-0 fs-5 text-primary"
+                name="amount"
+                [(ngModel)]="invoice.amount"
+                placeholder="0.00"
+                required
+              />
+
+              <!-- Status Hint -->
+              <span class="input-group-text bg-white border-0">
+                <i
+                  class="bi bi-info-circle-fill text-primary-subtle"
+                  title="Total amount including 10% tax"
+                ></i>
+              </span>
+            </div>
+            <div class="extra-small text-muted mt-1" style="font-size: 10px">
+              * This is the final billed amount for the client.
+            </div>
+          </div>
+
+          <!-- Dates & Status -->
+          <div class="col-md-4 mt-4">
+            <label class="form-label small fw-bold">Payment Due Date</label>
+            <input
+              type="date"
+              class="form-control"
+              name="dueDate"
+              [(ngModel)]="invoice.dueDate"
+              required
+            />
+          </div>
+          <div class="col-md-4 mt-4">
+            <label class="form-label small fw-bold">Target Delivery Date</label>
+            <input
+              type="date"
+              class="form-control"
+              name="deliveryDate"
+              [(ngModel)]="invoice.deliveryDate"
+            />
+          </div>
+          <div class="col-md-2 mt-4">
+            <label class="form-label small fw-bold">Approval Status</label>
+            <select
+              class="form-select border-primary fw-bold"
+              name="status"
+              [(ngModel)]="invoice.status"
+            >
+              <option value="DRAFT">DRAFT</option>
+              <option value="APPROVED">APPROVED</option>
+              <option value="REJECTED">REJECTED</option>
+            </select>
+          </div>
+          <div class="col-md-2 mt-4">
+            <label class="form-label small fw-bold">Payment Status</label>
+            <select
+              class="form-select border-info fw-bold"
+              name="paymentStatus"
+              [(ngModel)]="invoice.paymentStatus"
+            >
+              <option value="PENDING">PENDING</option>
+              <option value="PAID">PAID</option>
+              <option value="OVERDUE">OVERDUE</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer border-0 p-4 bg-white d-flex justify-content-between">
+        <div class="d-flex gap-2">
+          <button *ngIf="isEditMode" class="btn btn-success" (click)="approve(invoice.id!)">
+            Approve Now
+          </button>
+          <button *ngIf="isEditMode" class="btn btn-outline-info" (click)="markPaid(invoice.id!)">
+            Mark Paid
+          </button>
+        </div>
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-light px-4 border" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-dark px-5 fw-bold shadow"
+            (click)="isEditMode ? update() : add()"
+            [disabled]="!invoiceForm.valid"
+          >
+            {{ isEditMode ? 'Update Database' : 'Finalize & Save' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

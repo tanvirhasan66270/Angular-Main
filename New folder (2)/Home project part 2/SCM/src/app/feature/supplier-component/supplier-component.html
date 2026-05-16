@@ -1,0 +1,206 @@
+<div class="container-fluid px-4 py-4 animate-slide-up">
+  <!-- Header & Actions -->
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-5">
+    <div>
+      <h1 class="h2 fw-bold text-dark mb-1">Supplier Network</h1>
+      <p class="text-muted mb-0">Manage global supplier relations, performance ratings, and lead times.</p>
+    </div>
+    <div class="d-flex gap-3">
+      <button class="btn btn-light shadow-sm" (click)="auditVendors()"><i class="bi bi-shield-check"></i> Audit Vendors</button>
+      <button class="btn btn-primary shadow-lg" data-bs-toggle="modal" data-bs-target="#supplierModal" (click)="resetForm()">
+        <i class="bi bi-person-plus"></i> Onboard Supplier
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI Metrics -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-6 col-xl-3">
+      <div class="card kpi-card border-0 shadow-sm">
+        <div class="kpi-icon bg-primary bg-opacity-10 text-primary">
+          <i class="bi bi-people"></i>
+        </div>
+        <div>
+          <div class="text-muted small fw-bold text-uppercase">Total Partners</div>
+          <div class="h4 fw-bold mb-0">{{ totalSuppliers }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+      <div class="card kpi-card border-0 shadow-sm">
+        <div class="kpi-icon bg-success bg-opacity-10 text-success">
+          <i class="bi bi-star-fill"></i>
+        </div>
+        <div>
+          <div class="text-muted small fw-bold text-uppercase">Avg. Performance</div>
+          <div class="h4 fw-bold mb-0">{{ averageRating | number:'1.1-1' }} <small class="text-muted fs-6">/ 5.0</small></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+      <div class="card kpi-card border-0 shadow-sm">
+        <div class="kpi-icon bg-info bg-opacity-10 text-info">
+          <i class="bi bi-clock-history"></i>
+        </div>
+        <div>
+          <div class="text-muted small fw-bold text-uppercase">Avg. Lead Time</div>
+          <div class="h4 fw-bold mb-0">{{ avgLeadTime | number:'1.0-0' }} <small class="text-muted fs-6">Days</small></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+      <div class="card kpi-card border-0 shadow-sm">
+        <div class="kpi-icon bg-secondary bg-opacity-10 text-secondary">
+          <i class="bi bi-patch-check"></i>
+        </div>
+        <div>
+          <div class="text-muted small fw-bold text-uppercase">Active Contracts</div>
+          <div class="h4 fw-bold mb-0">{{ activeSuppliers }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Table Card -->
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="card-header bg-white py-3 px-4 border-bottom">
+      <div class="row align-items-center g-3">
+        <div class="col-md-4">
+          <h5 class="fw-bold mb-0">Supplier Directory</h5>
+        </div>
+        <div class="col-md-8">
+          <div class="input-group glass rounded-pill px-3 py-1 max-w-lg ms-md-auto">
+            <span class="input-group-text bg-transparent border-0 text-muted">
+              <i class="bi bi-search"></i>
+            </span>
+            <input type="text" class="form-control bg-transparent border-0 shadow-none small" 
+                   placeholder="Filter by name, contact, or email..." (input)="onSearch($event)">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="premium-table">
+          <thead>
+            <tr>
+              <th class="ps-4">Supplier Entity</th>
+              <th>Primary Contact</th>
+              <th>Performance</th>
+              <th>Lead Time</th>
+              <th>Status</th>
+              <th class="text-end pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of filteredSuppliers">
+              <td class="ps-4">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="rounded-circle bg-light d-flex align-items-center justify-content-center fw-bold text-primary" 
+                       style="width: 40px; height: 40px;">
+                    {{ s.name.charAt(0) }}
+                  </div>
+                  <div>
+                    <div class="fw-bold text-dark">{{ s.name }}</div>
+                    <div class="text-muted small">{{ s.email }}</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="fw-semibold">{{ s.contactPerson }}</div>
+                <div class="text-muted small">{{ s.phone }}</div>
+              </td>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="fw-bold">{{ s.rating }}</span>
+                  <div class="text-warning">
+                    <i class="bi" [ngClass]="s.rating! >= 1 ? 'bi-star-fill' : 'bi-star'"></i>
+                    <i class="bi" [ngClass]="s.rating! >= 2 ? 'bi-star-fill' : 'bi-star'"></i>
+                    <i class="bi" [ngClass]="s.rating! >= 3 ? 'bi-star-fill' : 'bi-star'"></i>
+                    <i class="bi" [ngClass]="s.rating! >= 4 ? 'bi-star-fill' : 'bi-star'"></i>
+                    <i class="bi" [ngClass]="s.rating! >= 5 ? 'bi-star-fill' : 'bi-star'"></i>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="badge-premium bg-light text-dark border">{{ s.averageLeadTimeDays }} Days</span>
+              </td>
+              <td>
+                <span class="badge-premium" [ngClass]="s.isActive ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'">
+                  {{ s.isActive ? 'Verified' : 'Blacklisted' }}
+                </span>
+              </td>
+              <td class="text-end pe-4">
+                <button class="btn btn-light btn-sm rounded-circle me-1" (click)="editSupplier(s)" data-bs-toggle="modal" data-bs-target="#supplierModal">
+                  <i class="bi bi-pencil text-primary"></i>
+                </button>
+                <button class="btn btn-light btn-sm rounded-circle" (click)="deleteSupplier(s.id!)">
+                  <i class="bi bi-trash text-danger"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Supplier Form Modal -->
+<div class="modal fade" id="supplierModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-2xl rounded-4">
+      <div class="modal-header border-0 p-4">
+        <h5 class="modal-title fw-bold">{{ isEditMode ? 'Update Partner Profile' : 'Onboard New Supplier' }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4 bg-light bg-opacity-50">
+        <form (ngSubmit)="isEditMode ? updateSupplier() : addSupplier()" #supplierForm="ngForm">
+          <div class="row g-4">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-uppercase text-secondary">Company Name</label>
+              <input type="text" class="form-control" [(ngModel)]="supplier.name" name="name" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-uppercase text-secondary">Contact Person</label>
+              <input type="text" class="form-control" [(ngModel)]="supplier.contactPerson" name="contactPerson" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-uppercase text-secondary">Email Address</label>
+              <input type="email" class="form-control" [(ngModel)]="supplier.email" name="email" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-uppercase text-secondary">Phone Number</label>
+              <input type="text" class="form-control" [(ngModel)]="supplier.phone" name="phone" required>
+            </div>
+            <div class="col-12">
+              <label class="form-label small fw-bold text-uppercase text-secondary">Business Address</label>
+              <textarea class="form-control" rows="3" [(ngModel)]="supplier.address" name="address"></textarea>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold text-uppercase text-secondary">Initial Rating (0-5)</label>
+              <input type="number" class="form-control" [(ngModel)]="supplier.rating" name="rating" min="0" max="5" step="0.1">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold text-uppercase text-secondary">Avg. Lead Time (Days)</label>
+              <input type="number" class="form-control" [(ngModel)]="supplier.averageLeadTimeDays" name="averageLeadTimeDays">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold text-uppercase text-secondary">Active Status</label>
+              <div class="form-check form-switch mt-2">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="supplier.isActive" name="isActive">
+                <label class="form-check-label small text-muted">Eligible for Procurement</label>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer border-0 px-0 pt-5">
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary px-5 shadow-lg" [disabled]="!supplierForm.valid">
+              {{ isEditMode ? 'Save Changes' : 'Complete Onboarding' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

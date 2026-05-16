@@ -1,0 +1,226 @@
+<div class="container-fluid mt-4">
+  <!-- ================= HEADER ================= -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h3 class="fw-bold mb-0">Payment Management</h3>
+
+      <small class="text-muted"> Manage invoice payments </small>
+    </div>
+
+    <button
+      class="btn btn-primary"
+      data-bs-toggle="modal"
+      data-bs-target="#paymentModal"
+      (click)="reset()"
+    >
+      <i class="bi bi-plus-circle me-1"></i>
+      Add Payment
+    </button>
+  </div>
+
+  <!-- ================= TABLE ================= -->
+  <div class="card shadow-sm border-0">
+    <div class="card-body table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Invoice</th>
+            <th>Amount</th>
+            <th>Currency</th>
+            <th>Method</th>
+            <th>Transaction Ref</th>
+            <th>Paid At</th>
+            <th>Confirmed By</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of payments; let i = index">
+            <td>{{ i + 1 }}</td>
+
+            <td>
+              <span class="fw-bold text-primary">
+                {{ getInvoiceNumber(item.invoiceId) }}
+              </span>
+            </td>
+
+            <td>
+              <span class="badge bg-success">
+                {{ item.amount | currency: item.currency }}
+              </span>
+            </td>
+
+            <td>{{ item.currency }}</td>
+
+            <td>
+              <span
+                class="badge"
+                [ngClass]="{
+                  'bg-primary': item.method === 'BANK',
+                  'bg-warning text-dark': item.method === 'CASH',
+                  'bg-info': item.method === 'CARD',
+                  'bg-dark': item.method === 'ONLINE',
+                }"
+              >
+                {{ item.method }}
+              </span>
+            </td>
+
+            <td>
+              {{ item.transactionRef }}
+            </td>
+
+            <td>
+              {{ item.paidAt | date: 'medium' }}
+            </td>
+
+            <td>
+              {{ getUserName(item.confirmedBy) }}
+            </td>
+
+            <!-- ACTIONS -->
+            <td class="text-center">
+              <button
+                class="btn btn-sm btn-outline-primary me-1"
+                data-bs-toggle="modal"
+                data-bs-target="#paymentModal"
+                (click)="edit(item)"
+              >
+                <i class="bi bi-pencil-square">Edit</i>
+              </button>
+
+              <button class="btn btn-sm btn-outline-danger" (click)="delete(item.id)">
+                <i class="bi bi-trash">Delete</i>
+              </button>
+            </td>
+          </tr>
+
+          <!-- EMPTY -->
+          <tr *ngIf="payments.length === 0">
+            <td colspan="9" class="text-center py-4 text-muted">No Payments Found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL ================= -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <!-- HEADER -->
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title">
+          {{ isEditMode ? 'Update Payment' : 'Create Payment' }}
+        </h5>
+
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          (click)="reset()"
+        ></button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body">
+        <div class="row g-3">
+          <!-- INVOICE -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold"> Invoice </label>
+
+            <select class="form-select" [(ngModel)]="payment.invoiceId" name="invoiceId">
+              <option value="">Select Invoice</option>
+
+              <option *ngFor="let inv of invoices" [value]="inv.id">
+                {{ inv.invoiceNumber }}
+              </option>
+            </select>
+          </div>
+
+          <!-- AMOUNT -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold"> Amount </label>
+
+            <input type="number" class="form-control" [(ngModel)]="payment.amount" name="amount" />
+          </div>
+
+          <!-- CURRENCY -->
+          <div class="col-md-4">
+            <label class="form-label fw-semibold"> Currency </label>
+
+            <select class="form-select" [(ngModel)]="payment.currency" name="currency">
+              <option value="USD">USD</option>
+              <option value="BDT">BDT</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+            </select>
+          </div>
+
+          <!-- METHOD -->
+          <div class="col-md-4">
+            <label class="form-label fw-semibold"> Payment Method </label>
+
+            <select class="form-select" [(ngModel)]="payment.method" name="method">
+              <option value="CASH">CASH</option>
+              <option value="BANK">BANK</option>
+              <option value="CARD">CARD</option>
+              <option value="ONLINE">ONLINE</option>
+            </select>
+          </div>
+
+          <!-- PAID DATE -->
+          <div class="col-md-4">
+            <label class="form-label fw-semibold"> Paid At </label>
+
+            <input
+              type="datetime-local"
+              class="form-control"
+              [(ngModel)]="payment.paidAt"
+              name="paidAt"
+            />
+          </div>
+
+          <!-- TRANSACTION REF -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold"> Transaction Ref </label>
+
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="payment.transactionRef"
+              name="transactionRef"
+            />
+          </div>
+
+          <!-- CONFIRMED BY -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold"> Confirmed By </label>
+
+            <select class="form-select" [(ngModel)]="payment.confirmedBy" name="confirmedBy">
+              <option value="">Select User</option>
+
+              <option *ngFor="let user of users" [value]="user.id">
+                {{ user.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+       
+        <button type="button" class="btn btn-primary" (click)="isEditMode ? update() : add()">
+          <i class="bi bi-check-circle me-1">Edit</i>
+
+          {{ isEditMode ? 'Update Payment' : 'Save Payment' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

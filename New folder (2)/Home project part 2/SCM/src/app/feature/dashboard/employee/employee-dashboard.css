@@ -1,0 +1,26 @@
+.shortcut-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background-color: #f8f9fa;
+  border-radius: 1rem;
+  color: #212529;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+.shortcut-box:hover {
+  background-color: #e9ecef;
+  transform: translateY(-5px);
+  border-color: #dee2e6;
+  color: #0d6efd;
+}
+.shortcut-box i {
+  color: #6c757d;
+  transition: color 0.3s ease;
+}
+.shortcut-box:hover i {
+  color: #0d6efd;
+}

@@ -1,0 +1,15 @@
+
+
+<div class="d-flex min-vh-100 overflow-hidden">
+  <!-- Sidebar — shows whenever user is logged in -->
+  <app-sidebar *ngIf="showSidebar()" class="flex-shrink-0"></app-sidebar>
+
+  <!-- Main Content -->
+  <div class="flex-grow-1 d-flex flex-column" [ngClass]="{'content-shifted': hasSidebar()}">
+    <!-- Navbar — ALWAYS visible -->
+    <app-navbar></app-navbar>
+    <main class="flex-grow-1 overflow-auto bg-light bg-opacity-50">
+      <router-outlet />
+    </main>
+  </div>
+</div>

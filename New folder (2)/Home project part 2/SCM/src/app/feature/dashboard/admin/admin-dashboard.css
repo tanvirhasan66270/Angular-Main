@@ -1,0 +1,10 @@
+.icon-box {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.transition-all:hover {
+  background-color: #f1f3f5 !important;
+  transform: translateX(5px);
+}
+.list-group-item:hover {
+  background-color: #f8f9fa;
+}

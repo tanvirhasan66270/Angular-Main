@@ -1,0 +1,164 @@
+<div class="container-fluid px-4 mt-4">
+
+  <!-- HEADER -->
+  <div class="d-flex justify-content-between mb-3">
+    <h4 class="fw-bold">Inventory Reservation</h4>
+
+    <button class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#modal"
+            (click)="reset()">
+      + Add Reservation
+    </button>
+  </div>
+
+  <!-- TABLE -->
+  <div class="card shadow-sm">
+    <div class="table-responsive">
+
+      <table class="table table-hover align-middle mb-0">
+
+        <thead class="table-light">
+          <tr>
+            <th>Buyer Order</th>
+            <th>Product</th>
+            <th>Warehouse</th>
+            <th>Qty</th>
+            <th>Reserved</th>
+            <th>Status</th>
+            <th class="text-center">Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let r of reservations">
+
+            <td>{{ getBuyerOrder(r.buyerOrderId) }}</td>
+            <td>{{ getProductName(r.productId) }}</td>
+            <td>{{ getWarehouseName(r.warehouseId) }}</td>
+            <td>{{ r.quantityReserved }}</td>
+            <td>{{ r.reservedAt | date }}</td>
+
+            <td>
+              <span class="badge" 
+                    [ngClass]="{
+                      'bg-primary': getStatus(r) === 'RESERVED',
+                      'bg-secondary': getStatus(r) === 'RELEASED',
+                      'bg-danger': getStatus(r) === 'EXPIRED'
+                    }">
+                {{ getStatus(r) }}
+              </span>
+            </td>
+
+            <td class="text-center">
+
+              <button class="btn btn-sm btn-primary me-1"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modal"
+                      *ngIf="!r.isReleased"
+                      (click)="edit(r)">
+                Edit
+              </button>
+
+              <button class="btn btn-sm btn-success me-1"
+                      *ngIf="getStatus(r) === 'RESERVED' || getStatus(r) === 'EXPIRED'"
+                      (click)="releaseReservation(r)">
+                Release
+              </button>
+
+              <button class="btn btn-sm btn-danger"
+                      (click)="delete(r.id)">
+                Delete
+              </button>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL ================= -->
+<div class="modal fade" id="modal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5>{{ isEditMode ? 'Update' : 'Add' }} Reservation</h5>
+        <button class="btn-close" data-bs-dismiss="modal" (click)="reset()"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="row g-3">
+
+          <!-- BUYER ORDER -->
+          <div class="col-md-4">
+            <label>Buyer Order</label>
+            <select class="form-select"
+                    [(ngModel)]="reservation.buyerOrderId">
+              <option value="">Select</option>
+              <option *ngFor="let b of buyerOrders" [value]="b.id">
+                {{ b.id }}
+              </option>
+            </select>
+          </div>
+
+          <!-- PRODUCT -->
+          <div class="col-md-4">
+            <label>Product</label>
+            <select class="form-select"
+                    [(ngModel)]="reservation.productId">
+              <option *ngFor="let p of products" [value]="p.id">
+                {{ p.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- WAREHOUSE -->
+          <div class="col-md-4">
+            <label>Warehouse</label>
+            <select class="form-select"
+                    [(ngModel)]="reservation.warehouseId">
+              <option *ngFor="let w of warehouses" [value]="w.id">
+                {{ w.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- QTY -->
+          <div class="col-md-6">
+            <label>Quantity</label>
+            <input type="number"
+                   class="form-control"
+                   [(ngModel)]="reservation.quantityReserved">
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button class="btn btn-secondary"
+                data-bs-dismiss="modal"
+                (click)="reset()">
+          Cancel
+        </button>
+
+        <button class="btn btn-success"
+                (click)="isEditMode ? update() : add()">
+          {{ isEditMode ? 'Update' : 'Save' }}
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+</div>

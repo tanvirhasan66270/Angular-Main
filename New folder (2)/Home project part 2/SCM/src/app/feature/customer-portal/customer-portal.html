@@ -1,0 +1,130 @@
+<div class="container-fluid px-4 py-4 animate-slide-up">
+  <!-- Customer Header -->
+  <div class="d-flex align-items-center justify-content-between mb-5">
+    <div>
+      <h1 class="h2 fw-bold text-dark mb-1">Welcome back, Tanvir!</h1>
+      <p class="text-muted mb-0">Track your B2B orders, download invoices, and manage your account.</p>
+    </div>
+    <div class="d-flex gap-3">
+      <button class="btn btn-outline-primary rounded-pill px-4" routerLink="/product">
+        <i class="bi bi-cart me-2"></i>Product Catalog
+      </button>
+      <button class="btn btn-primary rounded-pill px-4 shadow-lg" (click)="placeNewOrder()">
+        <i class="bi bi-plus-lg me-2"></i>Place New Order
+      </button>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-5">
+    <!-- Active Order Tracker -->
+    <div class="col-xl-8">
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+        <div class="d-flex justify-content-between align-items-start mb-4">
+          <div>
+            <h5 class="fw-bold mb-1">Current Order Tracking</h5>
+            <p class="text-muted smaller mb-0">Order #ORD-2026-X992 | Estimated: May 24, 2026</p>
+          </div>
+          <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2">In Transit</span>
+        </div>
+
+        <div class="tracking-stepper position-relative py-4">
+          <div class="progress" style="height: 6px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" [style.width.%]="orderProgress"></div>
+          </div>
+          <div class="d-flex justify-content-between mt-3">
+            <div class="text-center" style="width: 80px;">
+              <div class="bg-primary text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;"><i class="bi bi-check small"></i></div>
+              <div class="smaller fw-bold">Confirmed</div>
+            </div>
+            <div class="text-center" style="width: 80px;">
+              <div class="bg-primary text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;"><i class="bi bi-check small"></i></div>
+              <div class="smaller fw-bold">Processing</div>
+            </div>
+            <div class="text-center" style="width: 80px;">
+              <div class="bg-primary text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;"><i class="bi bi-truck small"></i></div>
+              <div class="smaller fw-bold text-primary">In Transit</div>
+            </div>
+            <div class="text-center opacity-50" style="width: 80px;">
+              <div class="bg-secondary text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;"></div>
+              <div class="smaller fw-bold">Delivered</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 p-3 bg-light rounded-3 d-flex align-items-center gap-3">
+          <i class="bi bi-info-circle text-primary fs-4"></i>
+          <div class="small">Your shipment is currently being processed at the <strong>Chattogram Distribution Hub</strong>.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Stats & Balance -->
+    <div class="col-xl-4">
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-indigo text-white">
+        <h5 class="fw-bold mb-4">Account Summary</h5>
+        <div class="mb-4">
+          <div class="smaller opacity-75 text-uppercase fw-bold mb-1">Outstanding Balance</div>
+          <div class="h2 fw-bold mb-0">$2,450.00</div>
+          <button class="btn btn-sm btn-light rounded-pill mt-2 px-3" (click)="payNow()">Pay Now</button>
+        </div>
+        <hr class="opacity-25">
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="smaller opacity-75">Loyalty Points</div>
+            <div class="h5 fw-bold">1,240</div>
+          </div>
+          <div class="col-6 text-end">
+            <div class="smaller opacity-75">Active Orders</div>
+            <div class="h5 fw-bold">03</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order History Table -->
+  <div class="card border-0 shadow-sm rounded-4 p-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <h5 class="fw-bold mb-0">Order History & Invoices</h5>
+      <div class="d-flex gap-2">
+        <button class="btn btn-white border btn-sm rounded-pill" (click)="openFilter()"><i class="bi bi-filter me-1"></i>Filter</button>
+        <button class="btn btn-white border btn-sm rounded-pill" (click)="downloadStatement()"><i class="bi bi-download me-1"></i>Statement</button>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="table premium-table">
+        <thead>
+          <tr>
+            <th>Order #</th>
+            <th>Placed On</th>
+            <th>Items</th>
+            <th>Total Amount</th>
+            <th>Payment</th>
+            <th>Status</th>
+            <th>Invoice</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="fw-bold">ORD-2026-X992</td>
+            <td>May 12, 2026</td>
+            <td>12 SKUs</td>
+            <td class="fw-bold">$1,240.00</td>
+            <td><span class="badge bg-success-subtle text-success rounded-pill">Paid</span></td>
+            <td><span class="badge bg-primary-subtle text-primary rounded-pill">In Transit</span></td>
+            <td><button class="btn btn-sm btn-link text-primary p-0" (click)="downloadInvoice('ORD-2026-X992')"><i class="bi bi-file-earmark-pdf fs-5"></i></button></td>
+          </tr>
+          <tr>
+            <td class="fw-bold">ORD-2026-X991</td>
+            <td>April 28, 2026</td>
+            <td>5 SKUs</td>
+            <td class="fw-bold">$850.00</td>
+            <td><span class="badge bg-success-subtle text-success rounded-pill">Paid</span></td>
+            <td><span class="badge bg-success-subtle text-success rounded-pill">Delivered</span></td>
+            <td><button class="btn btn-sm btn-link text-primary p-0" (click)="downloadInvoice('ORD-2026-X991')"><i class="bi bi-file-earmark-pdf fs-5"></i></button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

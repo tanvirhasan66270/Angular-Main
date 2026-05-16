@@ -1,0 +1,303 @@
+<div class="container-fluid px-4 mt-4">
+  <!-- Page Header -->
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h1 class="h3 mb-1 text-dark fw-bold">Delivery Trips</h1>
+      <p class="text-muted small mb-0">
+        Record and track active delivery runs, recipient signatures, and trip logs.
+      </p>
+    </div>
+    <button
+      class="btn btn-dark shadow-sm px-4 d-flex align-items-center"
+      data-bs-toggle="modal"
+      data-bs-target="#tripModal"
+      (click)="reset()"
+    >
+      <i class="bi bi-geo-alt-fill me-2"></i> Start New Trip
+    </button>
+  </div>
+
+  <!-- Data Table Card -->
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+      <h6 class="m-0 fw-bold text-dark">Live Trip Tracking</h6>
+      <div class="search-box w-25">
+        <input
+          type="text"
+          class="form-control form-control-sm bg-light"
+          placeholder="Search trip records..."
+        />
+      </div>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="bg-light text-muted small text-uppercase fw-bold">
+            <tr>
+              <th class="ps-4 py-3">Shipment #</th>
+              <th>Driver</th>
+              <th>Recipient Name</th>
+              <th>Started At</th>
+              <th>Completed At</th>
+              <th class="text-center">Signature</th>
+              <th class="text-center">Delivery Photo</th>
+              <th>Remarks</th>
+              <th>Status</th>
+              <th class="text-end pe-4">Manage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Empty State -->
+            <tr *ngIf="trips.length === 0">
+              <td colspan="10" class="text-center py-5 text-muted">
+                <i class="bi bi-inbox fs-2 d-block mb-2"></i> No delivery trips discovered.
+              </td>
+            </tr>
+
+            <!-- Dynamic Table Rows -->
+            <tr *ngFor="let item of trips">
+              <!-- Shipment -->
+              <td class="ps-4 fw-bold text-dark text-nowrap">
+                <i class="bi bi-box-seam text-primary me-2"></i>{{ getShipmentName(item.shipmentId) }}
+              </td>
+
+              <!-- Driver -->
+              <td>
+                <div class="fw-bold text-nowrap">{{ getDriverName(item.driverId) }}</div>
+                <div class="text-muted extra-small" style="font-size: 11px;">Assigned Driver</div>
+              </td>
+
+              <!-- Recipient Name -->
+              <td class="fw-medium text-secondary text-nowrap">
+                {{ item.recipientName || 'Not Set' }}
+              </td>
+
+              <!-- Started At -->
+              <td class="text-nowrap text-secondary small">
+                {{ item.startedAt ? (item.startedAt | date: 'short') : '—' }}
+              </td>
+
+              <!-- Completed At -->
+              <td class="text-nowrap">
+                <span *ngIf="item.completedAt" class="text-success fw-semibold small">
+                  {{ item.completedAt | date: 'short' }}
+                </span>
+                <span *ngIf="!item.completedAt" class="text-muted small">In Progress</span>
+              </td>
+
+              <!-- Recipient Signature Link -->
+              <td class="text-center">
+                <a
+                  *ngIf="item.recipientSignature"
+                  [href]="item.recipientSignature"
+                  target="_blank"
+                  class="btn btn-sm btn-outline-secondary py-1 px-2 text-nowrap fs-7"
+                >
+                  <i class="bi bi-pencil-square me-1"></i> View Doc
+                </a>
+                <span *ngIf="!item.recipientSignature" class="text-muted small">—</span>
+              </td>
+
+              <!-- Delivery Photo Link -->
+              <td class="text-center">
+                <a
+                  *ngIf="item.deliveryPhotoUrl"
+                  [href]="item.deliveryPhotoUrl"
+                  target="_blank"
+                  class="btn btn-sm btn-outline-info py-1 px-2 text-nowrap fs-7"
+                >
+                  <i class="bi bi-image me-1"></i> View Photo
+                </a>
+                <span *ngIf="!item.deliveryPhotoUrl" class="text-muted small">—</span>
+              </td>
+
+              <!-- Remarks -->
+              <td>
+                <div class="text-truncate text-muted small" style="max-width: 150px;" [title]="item.remarks">
+                  {{ item.remarks || 'No remarks' }}
+                </div>
+              </td>
+
+              <!-- Status -->
+              <td>
+                <span
+                  class="badge rounded-pill px-2.5 py-1.5"
+                  [ngClass]="{
+                    'bg-warning-subtle text-warning border border-warning': item.status === 'PENDING',
+                    'bg-primary-subtle text-primary border border-primary': item.status === 'IN_TRANSIT',
+                    'bg-success-subtle text-success border border-success': item.status === 'COMPLETED'
+                  }"
+                >
+                  {{ item.status }}
+                </span>
+              </td>
+
+              <!-- Manage Actions -->
+              <td class="text-end pe-4 text-nowrap">
+                <div class="btn-group btn-group-sm" role="group">
+                  <button
+                    type="button"
+                    class="btn btn-outline-dark"
+                    (click)="edit(item)"
+                    data-bs-toggle="modal"
+                    data-bs-target="#tripModal"
+                    title="Edit Trip"
+                  >
+                    <i class="bi bi-pencil-fill">Edit</i>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger"
+                    (click)="delete(item.id)"
+                    title="Remove Record"
+                  >
+                    <i class="bi bi-trash3-fill">Delete</i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Trip Management Modal -->
+<div class="modal fade" id="tripModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-dark text-white p-4">
+        <h5 class="modal-title fw-bold">
+          <i class="bi bi-truck-flatbed me-2"></i> {{ isEditMode ? 'Update' : 'Register' }} Delivery Trip
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          (click)="reset()"
+        ></button>
+      </div>
+      <div class="modal-body p-4 bg-light">
+        <form #tripForm="ngForm" class="row g-3">
+          <!-- ID Selections -->
+          <div class="col-md-6">
+            <label class="form-label small fw-bold">Select Shipment Reference</label>
+            <select
+              class="form-select shadow-sm"
+              name="shipmentId"
+              [(ngModel)]="trip.shipmentId"
+              required
+            >
+              <option value="">-- Choose Shipment --</option>
+              <option *ngFor="let s of shipments" [value]="s.id">{{ s.shipmentNumber }}</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-bold">Driver</label>
+            <select class="form-select shadow-sm" [(ngModel)]="trip.driverId" name="driverId" required>
+              <option value="">-- Select Driver --</option>
+              <option *ngFor="let d of drivers" [value]="d.id">🚚 {{ d.name }}</option>
+            </select>
+          </div>
+
+          <!-- Timestamps -->
+          <div class="col-md-6">
+            <label class="form-label small fw-bold">Start Time</label>
+            <input
+              type="datetime-local"
+              class="form-control"
+              name="startedAt"
+              [(ngModel)]="trip.startedAt"
+              required
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-bold">Completion Time</label>
+            <input
+              type="datetime-local"
+              class="form-control"
+              name="completedAt"
+              [(ngModel)]="trip.completedAt"
+            />
+          </div>
+
+          <hr class="my-4 text-muted" />
+
+          <!-- Recipient Details -->
+          <div class="col-md-6">
+            <label class="form-label small fw-bold">Recipient Full Name</label>
+            <input
+              type="text"
+              class="form-control shadow-sm"
+              name="recipientName"
+              [(ngModel)]="trip.recipientName"
+              placeholder="Enter name of receiver"
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-bold">Current Trip Status</label>
+            <select class="form-select shadow-sm bg-white" name="status" [(ngModel)]="trip.status">
+              <option value="PENDING">Pending</option>
+              <option value="IN_TRANSIT">In Transit</option>
+              <option value="COMPLETED">Completed</option>
+            </select>
+          </div>
+
+          <!-- URLs / Evidence -->
+          <div class="col-md-6">
+            <label class="form-label small fw-bold">Recipient Signature (URL)</label>
+            <input
+              type="text"
+              class="form-control"
+              name="recipientSignature"
+              [(ngModel)]="trip.recipientSignature"
+              placeholder="Link to signature file"
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-bold">Delivery Photo (URL)</label>
+            <input
+              type="text"
+              class="form-control"
+              name="deliveryPhotoUrl"
+              [(ngModel)]="trip.deliveryPhotoUrl"
+              placeholder="Link to proof photo"
+            />
+          </div>
+
+          <!-- Remarks -->
+          <div class="col-12">
+            <label class="form-label small fw-bold">Special Remarks / Notes</label>
+            <textarea
+              class="form-control"
+              name="remarks"
+              [(ngModel)]="trip.remarks"
+              rows="2"
+              placeholder="Any issues during delivery?"
+            ></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer border-0 p-3 bg-white">
+        <button
+          type="button"
+          class="btn btn-light px-4 border"
+          data-bs-dismiss="modal"
+          (click)="reset()"
+        >
+          Discard
+        </button>
+        <button
+          type="button"
+          class="btn btn-dark px-5 fw-bold shadow"
+          data-bs-dismiss="modal"
+          (click)="isEditMode ? update() : add()"
+          [disabled]="!tripForm.valid"
+        >
+          {{ isEditMode ? 'Update Trip Record' : 'Initialize Delivery' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

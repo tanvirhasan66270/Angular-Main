@@ -1,0 +1,213 @@
+<div class="container-fluid px-4 mt-4">
+
+  <!-- ================= HEADER ================= -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+      <h3 class="fw-bold text-dark mb-1">
+        Warehouse Management
+      </h3>
+      <p class="text-muted small mb-0">
+        Manage warehouse locations, capacity & SCM managers
+      </p>
+    </div>
+
+    <button class="btn btn-primary shadow-sm" (click)="openForm()" *ngIf="!showForm">
+      <i class="bi bi-plus-circle me-1"></i>
+      Add Warehouse
+    </button>
+
+  </div>
+
+  <!-- ================= CARD FORM ================= -->
+  <div class="card border-0 shadow-sm mb-4" *ngIf="showForm">
+
+    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+      <strong>
+        {{ isEditMode ? 'Update Warehouse' : 'Create Warehouse' }}
+      </strong>
+      <button type="button" class="btn-close btn-close-white" (click)="closeForm()"></button>
+    </div>
+
+    <div class="card-body bg-light">
+
+      <form (ngSubmit)="isEditMode ? updateWarehouse() : addWarehouse()">
+
+        <div class="row g-3">
+
+          <!-- NAME -->
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Name</label>
+            <input type="text" class="form-control shadow-sm"
+              [(ngModel)]="warehouse.name" name="name" required>
+          </div>
+
+          <!-- LOCATION -->
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Location</label>
+            <input type="text" class="form-control shadow-sm"
+              [(ngModel)]="warehouse.location" name="location" required>
+          </div>
+
+          <!-- CAPACITY -->
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Capacity</label>
+            <input type="number" class="form-control shadow-sm"
+              [(ngModel)]="warehouse.capacity" name="capacity" required>
+          </div>
+
+          <!-- MANAGER -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">SCM Manager</label>
+
+            <select class="form-select shadow-sm"
+              [(ngModel)]="warehouse.managerId"
+              name="managerId" required>
+
+              <option value="">Select SCM Manager</option>
+
+              <option *ngFor="let user of scmManagers"
+                [value]="user.id">
+
+                👤 {{ user.name }} ({{ user.email }})
+
+              </option>
+
+            </select>
+          </div>
+
+          <!-- STATUS -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Status</label>
+
+            <select class="form-select shadow-sm"
+              [(ngModel)]="warehouse.isActive"
+              name="isActive">
+
+              <option [ngValue]="true">🟢 Active</option>
+              <option [ngValue]="false">🔴 Inactive</option>
+
+            </select>
+          </div>
+
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="mt-3 d-flex gap-2">
+
+          <button type="submit" class="btn btn-success shadow-sm">
+            <i class="bi bi-check-circle me-1"></i>
+            {{ isEditMode ? 'Update' : 'Save' }}
+          </button>
+
+          <button type="button" class="btn btn-secondary"
+            (click)="closeForm()">
+            Cancel
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ================= TABLE ================= -->
+  <div class="card border-0 shadow-sm">
+
+    <div class="card-header bg-primary text-white">
+      Warehouse List
+    </div>
+
+    <div class="card-body p-0">
+
+      <div class="table-responsive">
+
+        <table class="table table-hover align-middle mb-0">
+
+          <thead class="table-light">
+            <tr>
+              <th>Name</th>
+              <th>Location</th>
+              <th>Capacity</th>
+              <th>Manager</th>
+              <th>Status</th>
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr *ngFor="let item of paginatedWarehouses">
+
+              <td class="fw-semibold">{{ item.name }}</td>
+              <td>{{ item.location }}</td>
+              <td>{{ item.capacity }}</td>
+
+              <td>
+                <span class="badge bg-info text-dark">
+                  {{ getManagerName(item.managerId) }}
+                </span>
+              </td>
+
+              <td>
+                <span class="badge"
+                  [ngClass]="item.isActive ? 'bg-success' : 'bg-danger'">
+
+                  {{ item.isActive ? 'Active' : 'Inactive' }}
+
+                </span>
+              </td>
+
+              <td class="text-center">
+
+                <button class="btn btn-sm btn-outline-primary me-1"
+                  (click)="editWarehouse(item)">
+                  <i class="bi bi-pencil"></i>
+                </button>
+
+                <button class="btn btn-sm btn-outline-danger"
+                  (click)="deleteWarehouse(item.id)">
+                  <i class="bi bi-trash"></i>
+                </button>
+
+              </td>
+
+            </tr>
+
+            <!-- EMPTY STATE -->
+            <tr *ngIf="warehouses.length === 0">
+              <td colspan="6" class="text-center py-4 text-muted">
+                No warehouses found
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+      <!-- PAGINATION CONTROLS -->
+      <div class="d-flex justify-content-between align-items-center mt-3 px-3 pb-3" *ngIf="warehouses.length > 0">
+        <span class="text-muted small">
+          Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ minShowing }} of {{ warehouses.length }} entries
+        </span>
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <button class="page-link" (click)="prevPage()">Previous</button>
+          </li>
+          <li class="page-item" *ngFor="let p of totalPagesArray" [class.active]="currentPage === p">
+            <button class="page-link" (click)="goToPage(p)">{{ p }}</button>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <button class="page-link" (click)="nextPage()">Next</button>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

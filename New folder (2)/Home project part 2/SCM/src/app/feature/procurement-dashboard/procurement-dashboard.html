@@ -1,0 +1,151 @@
+<div class="container-fluid px-4 py-4 animate-slide-up">
+  <!-- Procurement Header -->
+  <div class="d-flex align-items-center justify-content-between mb-5">
+    <div>
+      <h1 class="h2 fw-bold text-dark mb-1">Procurement Operations Hub</h1>
+      <p class="text-muted mb-0">Manage requisitions, purchase orders, and vendor performance.</p>
+    </div>
+    <div class="d-flex gap-3">
+      <button class="btn btn-primary rounded-pill px-4 shadow-lg" (click)="openNewRequisition()">
+        <i class="bi bi-plus-lg me-2"></i>New Requisition
+      </button>
+    </div>
+  </div>
+
+  <!-- Operational KPIs -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-4 p-4 glass">
+        <div class="text-muted small fw-bold text-uppercase mb-1">Pending PRs</div>
+        <div class="h3 fw-bold mb-0 text-primary">{{ stats.pendingPR }}</div>
+        <div class="mt-2 smaller text-muted"><i class="bi bi-clock me-1"></i> Total requisitions: {{ stats.totalPR }}</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-4 p-4 glass">
+        <div class="text-muted small fw-bold text-uppercase mb-1">Open POs</div>
+        <div class="h3 fw-bold mb-0 text-indigo">{{ stats.totalPO }}</div>
+        <div class="mt-2 smaller text-muted"><i class="bi bi-truck me-1"></i> Active orders</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-4 p-4 glass">
+        <div class="text-muted small fw-bold text-uppercase mb-1">Total Suppliers</div>
+        <div class="h3 fw-bold mb-0 text-success">{{ stats.totalSuppliers }}</div>
+        <div class="mt-2 smaller text-success fw-bold"><i class="bi bi-person-check me-1"></i> Vetted vendors</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-4 p-4 glass">
+        <div class="text-muted small fw-bold text-uppercase mb-1">Avg. Lead Time</div>
+        <div class="h3 fw-bold mb-0 text-warning">8.4 Days</div>
+        <div class="mt-2 smaller text-muted"><i class="bi bi-check-circle me-1"></i> Within KPI target</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-5">
+    <!-- Purchase Trends Chart -->
+    <div class="col-xl-8">
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+        <h5 class="fw-bold mb-4">Purchase Volume Trends</h5>
+        <apx-chart
+          [series]="purchaseTrends.series"
+          [chart]="purchaseTrends.chart"
+          [xaxis]="purchaseTrends.xaxis"
+          [stroke]="purchaseTrends.stroke"
+          [colors]="purchaseTrends.colors"
+          [dataLabels]="purchaseTrends.dataLabels"
+        ></apx-chart>
+      </div>
+    </div>
+
+    <!-- Quick Workflow Pipeline -->
+    <div class="col-xl-4">
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+        <h5 class="fw-bold mb-4">Procurement Pipeline</h5>
+        <div class="d-flex flex-column gap-4">
+          <div class="workflow-step d-flex gap-3">
+            <div class="step-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">1</div>
+            <div>
+              <div class="fw-bold small">Requisition (PR)</div>
+              <div class="text-muted smaller">{{ stats.pendingPR }} Pending Approval</div>
+            </div>
+          </div>
+          <div class="workflow-step d-flex gap-3">
+            <div class="step-icon bg-indigo text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">2</div>
+            <div>
+              <div class="fw-bold small">Quotation (RFQ)</div>
+              <div class="text-muted smaller">8 Awaiting Vendor Response</div>
+            </div>
+          </div>
+          <div class="workflow-step d-flex gap-3">
+            <div class="step-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">3</div>
+            <div>
+              <div class="fw-bold small">Purchase Order (PO)</div>
+              <div class="text-muted smaller">{{ stats.totalPO }} Total Orders</div>
+            </div>
+          </div>
+        </div>
+        <hr class="my-4">
+        <h6 class="fw-bold mb-3">Top Suppliers (Performance)</h6>
+        <div class="d-flex flex-column gap-2">
+          <div class="d-flex justify-content-between small">
+            <span>Global Tech Solutions</span>
+            <span class="text-success fw-bold">98%</span>
+          </div>
+          <div class="d-flex justify-content-between small">
+            <span>Maersk Logistics</span>
+            <span class="text-success fw-bold">95%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed PR Tracking Table -->
+  <div class="card border-0 shadow-sm rounded-4 p-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <h5 class="fw-bold mb-0">Active Purchase Requisitions</h5>
+      <button class="btn btn-light btn-sm rounded-pill" routerLink="/purchase-requisition">View All</button>
+    </div>
+    <div class="table-responsive">
+      <table class="table premium-table">
+        <thead>
+          <tr>
+            <th>PR #</th>
+            <th>Urgency</th>
+            <th>Required Date</th>
+            <th>Requested By</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let pr of recentRequisitions">
+            <td class="fw-bold">PR-{{ pr.id }}</td>
+            <td>
+              <span class="badge" [ngClass]="pr.urgencyLevel === 'HIGH' ? 'bg-danger-subtle text-danger' : 'bg-info-subtle text-info'">
+                {{ pr.urgencyLevel }}
+              </span>
+            </td>
+            <td>{{ pr.requiredByDate | date }}</td>
+            <td>{{ pr.requestedBy }}</td>
+            <td>
+              <span class="badge rounded-pill" [ngClass]="'bg-' + getStatusBadge(pr.approvalStatus) + '-subtle text-' + getStatusBadge(pr.approvalStatus)">
+                {{ pr.approvalStatus }}
+              </span>
+            </td>
+            <td>
+              <button *ngIf="pr.approvalStatus === 'PENDING'" class="btn btn-sm btn-outline-primary rounded-pill" (click)="approvePR(pr.id)">Approve</button>
+              <button *ngIf="pr.approvalStatus === 'APPROVED'" class="btn btn-sm btn-light rounded-pill" routerLink="/purchase-order">View PO</button>
+            </td>
+          </tr>
+          <tr *ngIf="recentRequisitions.length === 0">
+            <td colspan="6" class="text-center py-4 text-muted small">No active requisitions found.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

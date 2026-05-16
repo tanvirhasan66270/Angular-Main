@@ -1,0 +1,99 @@
+<div class="container-fluid px-3 py-4 animate-slide-up" style="max-width: 500px; margin: 0 auto;">
+  <!-- Driver Header -->
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h4 class="fw-bold text-dark mb-0">My Delivery Trips</h4>
+      <p class="text-muted small mb-0">Driver: MD. Tanvir</p>
+    </div>
+    <div class="bg-success-subtle text-success p-2 rounded-circle">
+      <i class="bi bi-person-check fs-5"></i>
+    </div>
+  </div>
+
+  <!-- Active Trip Card -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" [class.bg-primary]="isTripActive" [class.text-white]="isTripActive">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <div>
+        <span class="badge rounded-pill mb-2" [class.bg-white]="isTripActive" [class.text-primary]="isTripActive" [class.bg-primary-subtle]="!isTripActive" [class.text-primary]="!isTripActive">
+          {{ isTripActive ? 'IN PROGRESS' : 'ASSIGNED' }}
+        </span>
+        <h5 class="fw-bold mb-0">Trip #TRP-2026-9901</h5>
+      </div>
+      <i class="bi bi-truck fs-1 opacity-25"></i>
+    </div>
+    
+    <div class="d-flex flex-column gap-3 mb-4">
+      <div class="d-flex gap-3">
+        <i class="bi bi-geo-alt-fill text-danger" [class.text-white]="isTripActive"></i>
+        <div>
+          <div class="smaller opacity-75">Pick-up</div>
+          <div class="small fw-bold">Dhaka Central Warehouse</div>
+        </div>
+      </div>
+      <div class="d-flex gap-3">
+        <i class="bi bi-geo-fill text-success" [class.text-white]="isTripActive"></i>
+        <div>
+          <div class="smaller opacity-75">Drop-off</div>
+          <div class="small fw-bold">Chattogram Port Terminal</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-lg w-100 rounded-pill fw-bold py-3 shadow-lg" 
+            [class.btn-light]="isTripActive" [class.text-primary]="isTripActive" 
+            [class.btn-primary]="!isTripActive"
+            (click)="toggleTrip()">
+      {{ isTripActive ? 'COMPLETE TRIP' : 'START TRIP' }}
+    </button>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="row g-3 mb-4">
+    <div class="col-6">
+      <button class="btn btn-white border shadow-sm w-100 rounded-4 p-3 text-center" (click)="openNavigation()">
+        <i class="bi bi-map text-primary fs-3 d-block mb-2"></i>
+        <span class="smaller fw-bold">Navigation</span>
+      </button>
+    </div>
+    <div class="col-6">
+      <button class="btn btn-white border shadow-sm w-100 rounded-4 p-3 text-center" (click)="uploadPOD()">
+        <i class="bi bi-camera text-indigo fs-3 d-block mb-2"></i>
+        <span class="smaller fw-bold">Upload POD</span>
+      </button>
+    </div>
+    <div class="col-6">
+      <button class="btn btn-white border shadow-sm w-100 rounded-4 p-3 text-center" (click)="contactOps()">
+        <i class="bi bi-telephone text-success fs-3 d-block mb-2"></i>
+        <span class="smaller fw-bold">Contact Ops</span>
+      </button>
+    </div>
+    <div class="col-6">
+      <button class="btn btn-white border shadow-sm w-100 rounded-4 p-3 text-center" (click)="reportIssue()">
+        <i class="bi bi-exclamation-triangle text-danger fs-3 d-block mb-2"></i>
+        <span class="smaller fw-bold">Report Issue</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Trip History Mini -->
+  <div class="card border-0 shadow-sm rounded-4 p-4">
+    <h6 class="fw-bold mb-3">Recent History</h6>
+    <div class="d-flex flex-column gap-3">
+      <div class="d-flex justify-content-between align-items-center small">
+        <div>
+          <div class="fw-bold">Trip #TRP-2026-9899</div>
+          <div class="text-muted smaller">Completed May 15, 04:30 PM</div>
+        </div>
+        <span class="text-success fw-bold">Success</span>
+      </div>
+      <hr class="my-0 opacity-10">
+      <div class="d-flex justify-content-between align-items-center small">
+        <div>
+          <div class="fw-bold">Trip #TRP-2026-9898</div>
+          <div class="text-muted smaller">Completed May 14, 11:20 AM</div>
+        </div>
+        <span class="text-success fw-bold">Success</span>
+      </div>
+    </div>
+  </div>
+</div>

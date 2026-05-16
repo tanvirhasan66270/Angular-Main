@@ -1,0 +1,223 @@
+<div class="container-fluid px-4 py-4 animate-slide-up">
+  <!-- Header & Actions -->
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-5">
+    <div>
+      <h1 class="h2 fw-bold text-dark mb-1">Inventory Management</h1>
+      <p class="text-muted mb-0">Monitor stock levels, manage products, and track reorder points.</p>
+    </div>
+    <div class="d-flex gap-3">
+      <button class="btn btn-light shadow-sm" (click)="exportProductData()"><i class="bi bi-download"></i> Export Data</button>
+      <button class="btn btn-primary shadow-lg" *ngIf="canEdit()" data-bs-toggle="modal" data-bs-target="#productModal" (click)="resetForm()">
+        <i class="bi bi-plus-lg"></i> Add New Product
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI Metrics -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-6 col-xl-3">
+      <div class="card kpi-card border-0 shadow-sm">
+        <div class="kpi-icon bg-primary bg-opacity-10 text-primary">
+          <i class="bi bi-box-seam"></i>
+        </div>
+        <div>
+          <div class="text-muted small fw-bold text-uppercase">Total Stock</div>
+          <div class="h4 fw-bold mb-0">{{ totalStock | number }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+      <div class="card kpi-card border-0 shadow-sm">
+        <div class="kpi-icon bg-warning bg-opacity-10 text-warning">
+          <i class="bi bi-exclamation-triangle"></i>
+        </div>
+        <div>
+          <div class="text-muted small fw-bold text-uppercase">Low Stock Alert</div>
+          <div class="h4 fw-bold mb-0">{{ lowStockCount }} <small class="text-muted fs-6">Items</small></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+      <div class="card kpi-card border-0 shadow-sm">
+        <div class="kpi-icon bg-success bg-opacity-10 text-success">
+          <i class="bi bi-currency-dollar"></i>
+        </div>
+        <div>
+          <div class="text-muted small fw-bold text-uppercase">Inventory Value</div>
+          <div class="h4 fw-bold mb-0">${{ totalValue | number:'1.2-2' }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+      <div class="card kpi-card border-0 shadow-sm">
+        <div class="kpi-icon bg-info bg-opacity-10 text-info">
+          <i class="bi bi-check2-circle"></i>
+        </div>
+        <div>
+          <div class="text-muted small fw-bold text-uppercase">Active SKUs</div>
+          <div class="h4 fw-bold mb-0">{{ activeProducts }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Table Card -->
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="card-header bg-white py-3 px-4 border-bottom">
+      <div class="row align-items-center g-3">
+        <div class="col-md-4">
+          <h5 class="fw-bold mb-0">Stock Directory</h5>
+        </div>
+        <div class="col-md-8">
+          <div class="input-group glass rounded-pill px-3 py-1 max-w-lg ms-md-auto">
+            <span class="input-group-text bg-transparent border-0 text-muted">
+              <i class="bi bi-search"></i>
+            </span>
+            <input type="text" class="form-control bg-transparent border-0 shadow-none small" 
+                   placeholder="Filter by name, code or category..." (input)="onSearch($event)">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="premium-table">
+          <thead>
+            <tr>
+              <th class="ps-4">Product Details</th>
+              <th>Category</th>
+              <th>In Stock</th>
+              <th>Unit Cost</th>
+              <th>Total Value</th>
+              <th>Status</th>
+              <th *ngIf="canEdit()" class="text-end pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of filteredProducts">
+              <td class="ps-4">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="rounded-3 border overflow-hidden bg-light" style="width: 48px; height: 48px;">
+                    <img [src]="p.image || 'assets/placeholder-product.png'" class="w-100 h-100 object-fit-cover">
+                  </div>
+                  <div>
+                    <div class="fw-bold text-dark">{{ p.name }}</div>
+                    <div class="text-muted small">#{{ p.productCode }}</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="badge-premium bg-light text-dark border">{{ p.categoryId }}</span>
+              </td>
+              <td>
+                <div [ngClass]="{'text-danger fw-bold': p.quantity <= p.reorderPoint}">
+                  {{ p.quantity }} {{ p.unit }}
+                </div>
+                <div class="progress mt-1" style="height: 4px; width: 60px;">
+                  <div class="progress-bar" [ngClass]="p.quantity <= p.reorderPoint ? 'bg-danger' : 'bg-success'"
+                       [style.width.%]="(p.quantity / (p.reorderPoint * 2)) * 100"></div>
+                </div>
+              </td>
+              <td>${{ p.unitCost | number:'1.2-2' }}</td>
+              <td><span class="fw-bold">${{ (p.quantity * p.unitCost) | number:'1.2-2' }}</span></td>
+              <td>
+                <span class="badge-premium" [ngClass]="p.isActive ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'">
+                  {{ p.isActive ? 'In Service' : 'Discontinued' }}
+                </span>
+              </td>
+              <td *ngIf="canEdit()" class="text-end pe-4">
+                <button class="btn btn-light btn-sm rounded-circle me-1" (click)="edit(p)" data-bs-toggle="modal" data-bs-target="#productModal">
+                  <i class="bi bi-pencil text-primary"></i>
+                </button>
+                <button class="btn btn-light btn-sm rounded-circle" (click)="deleteProduct(p.id!)">
+                  <i class="bi bi-trash text-danger"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Product Form Modal -->
+<div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-2xl rounded-4">
+      <div class="modal-header border-0 p-4">
+        <h5 class="modal-title fw-bold">{{ isEditMode ? 'Modify Product Entity' : 'Create New Inventory Item' }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4 bg-light bg-opacity-50">
+        <form (ngSubmit)="save()" #productForm="ngForm">
+          <div class="row g-4">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-uppercase text-secondary">Product Name</label>
+              <input type="text" class="form-control" [(ngModel)]="product.name" name="name" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-uppercase text-secondary">Product Code (SKU)</label>
+              <input type="text" class="form-control" [(ngModel)]="product.productCode" name="productCode" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold text-uppercase text-secondary">Category</label>
+              <select class="form-select" [(ngModel)]="product.categoryId" name="categoryId" required>
+                <option value="" disabled selected>Select Category</option>
+                <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.categoryName }}</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold text-uppercase text-secondary">Unit Type</label>
+              <select class="form-select" [(ngModel)]="product.unit" name="unit">
+                <option value="pcs">Pieces (pcs)</option>
+                <option value="kg">Kilograms (kg)</option>
+                <option value="litre">Litres (L)</option>
+                <option value="box">Boxes</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold text-uppercase text-secondary">Active Status</label>
+              <div class="form-check form-switch mt-2">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="product.isActive" name="isActive">
+                <label class="form-check-label small text-muted">Available for orders</label>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold text-uppercase text-secondary">Current Quantity</label>
+              <input type="number" class="form-control" [(ngModel)]="product.quantity" name="quantity" (input)="calculateSellingPrice()">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold text-uppercase text-secondary">Reorder Threshold</label>
+              <input type="number" class="form-control text-warning fw-bold" [(ngModel)]="product.reorderPoint" name="reorderPoint">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold text-uppercase text-secondary">Unit Cost ($)</label>
+              <input type="number" class="form-control" [(ngModel)]="product.unitCost" name="unitCost" (input)="calculateSellingPrice()">
+            </div>
+            <div class="col-12">
+              <label class="form-label small fw-bold text-uppercase text-secondary">Product Image</label>
+              <div class="d-flex align-items-center gap-4">
+                <div class="rounded-4 border-2 border-dashed d-flex align-items-center justify-content-center bg-white" 
+                     style="width: 120px; height: 120px;">
+                  <img *ngIf="product.image" [src]="product.image" class="w-100 h-100 object-fit-cover rounded-3">
+                  <i *ngIf="!product.image" class="bi bi-image text-muted fs-1"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <input type="file" class="form-control border-0 bg-white" (change)="onFileChange($event)">
+                  <small class="text-muted d-block mt-2">Recommended: 400x400px JPG/PNG, Max 2MB.</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer border-0 px-0 pt-5">
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal" (click)="resetForm()">Discard</button>
+            <button type="submit" class="btn btn-primary px-5 shadow-lg" [disabled]="!productForm.valid" data-bs-dismiss="modal">
+              {{ isEditMode ? 'Update Inventory' : 'Add to Stock' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

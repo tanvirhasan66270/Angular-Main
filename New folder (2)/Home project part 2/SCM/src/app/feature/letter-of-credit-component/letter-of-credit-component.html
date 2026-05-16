@@ -1,0 +1,445 @@
+<div class="container-fluid px-4 mt-4">
+
+    <!-- ================= HEADER ================= -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h3 class="fw-bold text-dark mb-1">
+                Letter Of Credit (LC)
+            </h3>
+
+            <p class="text-muted small mb-0">
+                Manage buyer bank guarantees and LC documentation.
+            </p>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button class="btn btn-dark shadow-sm" (click)="exportToPDF()">
+                <i class="bi bi-file-earmark-pdf me-1"></i> Export PDF
+            </button>
+
+            <button
+                class="btn btn-primary shadow-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#lcModal"
+                (click)="reset()">
+
+                <i class="bi bi-plus-circle me-1"></i>
+                Add LC
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= SEARCH & LOADING ================= -->
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <input
+                type="text"
+                class="form-control shadow-sm"
+                placeholder="Search LC number, bank, status..."
+                [(ngModel)]="searchText">
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- ================= TABLE CARD ================= -->
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive" *ngIf="!loading">
+
+                <table id="lcTable" class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+
+                        <tr class="text-uppercase small text-secondary">
+
+                            <th class="ps-4">LC Number</th>
+
+                            <th>Buyer Order</th>
+
+                            <th>Issuing Bank</th>
+
+                            <th>Amount</th>
+
+                            <th>Currency</th>
+
+                            <th>Status</th>
+
+                            <th>Expiry</th>
+
+                            <th>Opened</th>
+
+                            <th class="text-center">Actions</th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr *ngFor="let item of filteredLCs">
+
+                            <td class="ps-4 fw-bold">
+                                {{ item.lcNumber }}
+                            </td>
+
+                            <td>
+                                {{ getBuyerOrderInfo(item.buyerOrderId) }}
+                            </td>
+
+                            <td>
+                                {{ item.issuingBank }}
+                            </td>
+
+                            <td class="fw-semibold text-primary">
+                                {{ item.amount | number:'1.2-2' }}
+                            </td>
+
+                            <td>
+                                {{ item.currency }}
+                            </td>
+
+                            <td>
+
+                                <span
+                                    class="badge"
+                                    [ngClass]="{
+                                      'bg-warning text-dark': item.status === 'PENDING',
+                                      'bg-success': item.status === 'APPROVED',
+                                      'bg-danger': item.status === 'REJECTED'
+                                    }">
+                                    {{ item.status }}
+                                </span>
+
+                            </td>
+
+                            <td>
+                                {{ item.expiryDate | date:'mediumDate' }}
+                            </td>
+
+                            <td>
+                                {{ item.openedAt | date:'mediumDate' }}
+                            </td>
+
+                            <td class="text-center">
+
+                                <div class="d-flex justify-content-center gap-1">
+
+                                    <!-- EDIT -->
+                                    <button
+                                        class="btn btn-sm btn-outline-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#lcModal"
+                                        (click)="edit(item)">
+
+                                        <i class="bi bi-pencil-square">Edit</i>
+                                    </button>
+
+                                    <!-- APPROVE -->
+                                    <button
+                                        class="btn btn-sm btn-outline-success"
+                                        (click)="approve(item.id)">
+
+                                        <i class="bi bi-check-circle">Approved</i>
+                                    </button>
+
+                                    <!-- REJECT -->
+                                    <button
+                                        class="btn btn-sm btn-outline-warning"
+                                        (click)="reject(item.id)">
+
+                                        <i class="bi bi-x-circle">Reject</i>
+                                    </button>
+
+                                    <!-- DELETE -->
+                                    <button
+                                        class="btn btn-sm btn-outline-danger"
+                                        (click)="delete(item.id)">
+
+                                        <i class="bi bi-trash3">Delete</i>
+                                    </button>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        <!-- EMPTY -->
+                        <tr *ngIf="filteredLCs.length === 0">
+
+                            <td
+                                colspan="9"
+                                class="text-center py-5 text-muted">
+
+                                No Letter Of Credit Found
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- MODAL -->
+<!-- ===================================================== -->
+
+<div
+    class="modal fade"
+    id="lcModal"
+    tabindex="-1"
+    aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+        <div class="modal-content border-0 shadow-lg">
+
+            <!-- HEADER -->
+            <div class="modal-header bg-dark text-white">
+
+                <h5 class="modal-title fw-bold">
+
+                    <i class="bi bi-bank2 me-2"></i>
+
+                    {{
+                        isEditMode
+                        ? 'Update Letter Of Credit'
+                        : 'Create Letter Of Credit'
+                    }}
+
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal"
+                    (click)="reset()">
+                </button>
+
+            </div>
+
+            <!-- BODY -->
+            <div class="modal-body bg-light">
+
+                <form
+                    #lcForm="ngForm"
+                    class="row g-3">
+
+                    <!-- LC NUMBER -->
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            LC Number
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="lcNumber"
+                            [(ngModel)]="lc.lcNumber"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+    <label class="form-label fw-bold">
+        Buyer Order
+    </label>
+
+    <select
+        class="form-select"
+        [(ngModel)]="lc.buyerOrderId"
+        name="buyerOrderId"
+        required>
+
+        <option value="" disabled selected>
+            Select Buyer Order
+        </option>
+
+      <option
+    *ngFor="let order of buyerOrders"
+    [value]="order.id">
+
+    {{ order.id }} • {{ order.totalValue | number:'1.0-0' }} USD
+
+</option>
+
+    </select>
+
+</div>
+
+                    <!-- BANK -->
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Issuing Bank
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="issuingBank"
+                            [(ngModel)]="lc.issuingBank"
+                            required>
+
+                    </div>
+
+                    <!-- AMOUNT -->
+                    <div class="col-md-3">
+
+                        <label class="form-label fw-semibold">
+                            Amount
+                        </label>
+
+                        <input
+                            type="number"
+                            class="form-control"
+                            name="amount"
+                            [(ngModel)]="lc.amount"
+                            (input)="validateAmount()"
+                            required>
+
+                    </div>
+
+                    <!-- CURRENCY -->
+                    <div class="col-md-3">
+
+                        <label class="form-label fw-semibold">
+                            Currency
+                        </label>
+
+                        <select
+                            class="form-select"
+                            name="currency"
+                            [(ngModel)]="lc.currency">
+
+                            <option value="USD">USD</option>
+                            <option value="BDT">BDT</option>
+                            <option value="EUR">EUR</option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- EXPIRY -->
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Expiry Date
+                        </label>
+
+                        <input
+                            type="date"
+                            class="form-control"
+                            name="expiryDate"
+                            [(ngModel)]="lc.expiryDate"
+                            required>
+
+                    </div>
+
+                    <!-- STATUS -->
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Status
+                        </label>
+
+                        <select
+                            class="form-select"
+                            name="status"
+                            [(ngModel)]="lc.status">
+
+                            <option value="PENDING">
+                                PENDING
+                            </option>
+
+                            <option value="APPROVED">
+                                APPROVED
+                            </option>
+
+                            <option value="REJECTED">
+                                REJECTED
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- DOCUMENT URL -->
+                    <div class="col-12">
+
+                        <label class="form-label fw-semibold">
+                            Document Vault URL
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="documentVaultUrl"
+                            [(ngModel)]="lc.documentVaultUrl">
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <!-- FOOTER -->
+            <div class="modal-footer bg-white border-0">
+
+                <button
+                    type="button"
+                    class="btn btn-light border"
+                    data-bs-dismiss="modal"
+                    (click)="reset()">
+
+                    Cancel
+                </button>
+
+                <!-- SAVE -->
+                <button
+                    *ngIf="!isEditMode"
+                    type="button"
+                    class="btn btn-primary shadow-sm"
+                    [disabled]="!lcForm.valid"
+                    (click)="add()">
+
+                    <i class="bi bi-check-circle me-1"></i>
+                    Save LC
+                </button>
+
+                <!-- UPDATE -->
+                <button
+                    *ngIf="isEditMode"
+                    type="button"
+                    class="btn btn-success shadow-sm"
+                    [disabled]="!lcForm.valid"
+                    (click)="update()">
+
+                    <i class="bi bi-arrow-repeat me-1"></i>
+                    Update LC
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

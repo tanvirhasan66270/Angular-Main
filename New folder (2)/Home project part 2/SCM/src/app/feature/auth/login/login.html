@@ -1,0 +1,82 @@
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-login">
+  <div class="row w-100 max-w-6xl g-0 overflow-hidden rounded-4 shadow-2xl animate-slide-up">
+    <!-- Left Pane: Illustration -->
+    <div class="col-lg-7 d-none d-lg-flex flex-column justify-content-center p-5 bg-primary position-relative">
+      <div class="z-1 text-white">
+        <h1 class="display-4 fw-bold mb-4">Master Your <span class="text-secondary">Supply Chain</span></h1>
+        <p class="lead opacity-75 mb-5">Experience the next generation of Enterprise Resource Planning. Integrated, intelligent, and scalable.</p>
+        <img src="scm_login_illustration_1778925400564.png" alt="SCM Illustration" class="img-fluid rounded-4 shadow-xl">
+      </div>
+      <!-- Background Shapes -->
+      <div class="bg-shape-1 position-absolute"></div>
+      <div class="bg-shape-2 position-absolute"></div>
+    </div>
+
+    <!-- Right Pane: Login Form -->
+    <div class="col-lg-5 bg-white p-5 d-flex flex-column justify-content-center">
+      <div class="mb-5">
+        <div class="d-flex align-items-center gap-2 mb-4">
+          <i class="bi bi-box-seam-fill text-primary fs-2"></i>
+          <span class="fs-3 fw-bold tracking-tight">SCM Pro</span>
+        </div>
+        <h2 class="fw-bold text-dark">Welcome back</h2>
+        <p class="text-muted">Enter your credentials to access your secure workspace.</p>
+      </div>
+
+      <form (ngSubmit)="login()" #loginForm="ngForm" novalidate>
+        <div class="mb-4">
+          <label class="form-label small fw-bold text-secondary text-uppercase">Work Email</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light border-0"><i class="bi bi-envelope"></i></span>
+            <input 
+              type="email" 
+              name="email" 
+              [(ngModel)]="email" 
+              class="form-control bg-light border-0 py-2.5" 
+              placeholder="name@company.com"
+              required />
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <label class="form-label small fw-bold text-secondary text-uppercase">Password</label>
+            <a href="#" class="text-primary text-decoration-none small fw-semibold">Forgot?</a>
+          </div>
+          <div class="input-group">
+            <span class="input-group-text bg-light border-0"><i class="bi bi-key"></i></span>
+            <input 
+              type="password" 
+              name="password" 
+              [(ngModel)]="password" 
+              class="form-control bg-light border-0 py-2.5" 
+              placeholder="••••••••"
+              required />
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center mb-4">
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="rememberMe">
+            <label class="form-check-label text-muted small" for="rememberMe">Keep me signed in</label>
+          </div>
+        </div>
+
+        <div class="d-grid mb-4">
+          <button 
+            type="submit" 
+            class="btn btn-primary btn-lg shadow-lg py-3"
+            [disabled]="!loginForm.form.valid || isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+            {{ isLoading ? 'Signing In...' : 'Sign In to Workspace' }}
+            <i *ngIf="!isLoading" class="bi bi-arrow-right ms-2"></i>
+          </button>
+        </div>
+
+        <div class="text-center">
+          <p class="text-muted small">Don't have an account? <a routerLink="/register" class="text-primary fw-bold text-decoration-none">Create account</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

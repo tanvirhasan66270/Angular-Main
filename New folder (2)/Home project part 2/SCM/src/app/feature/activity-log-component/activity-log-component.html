@@ -1,0 +1,323 @@
+<div class="container-fluid mt-4">
+
+  <!-- ================= HEADER ================= -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+      <h3 class="fw-bold mb-1">
+        Activity Log Dashboard
+      </h3>
+
+      <p class="text-muted mb-0">
+        Monitor all system activities
+      </p>
+    </div>
+
+    <div>
+      <button class="btn btn-outline-success shadow-sm me-2" (click)="exportToExcel()">
+        <i class="bi bi-file-earmark-excel"></i> Export Excel
+      </button>
+      
+      <button class="btn btn-outline-danger shadow-sm me-2" (click)="exportToPDF()">
+        <i class="bi bi-file-earmark-pdf"></i> Export PDF
+      </button>
+
+      <button class="btn btn-primary shadow-sm"
+              data-bs-toggle="modal"
+              data-bs-target="#logModal"
+              (click)="reset()">
+        <i class="bi bi-plus-circle me-1"></i>
+        Add Activity
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ================= STATS ================= -->
+  <div class="row g-3 mb-4">
+
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm bg-primary text-white">
+        <div class="card-body">
+          <h6>Total Logs</h6>
+          <h2 class="fw-bold">
+            {{ filteredLogs().length }}
+          </h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm bg-success text-white">
+        <div class="card-body">
+          <h6>Create Actions</h6>
+          <h2 class="fw-bold">
+            {{ filteredLogs().filter(x => x.action === 'CREATE').length }}
+          </h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm bg-warning text-dark">
+        <div class="card-body">
+          <h6>Update Actions</h6>
+          <h2 class="fw-bold">
+            {{ filteredLogs().filter(x => x.action === 'UPDATE').length }}
+          </h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm bg-danger text-white">
+        <div class="card-body">
+          <h6>Delete Actions</h6>
+          <h2 class="fw-bold">
+            {{ filteredLogs().filter(x => x.action === 'DELETE').length }}
+          </h2>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= FILTERS ================= -->
+  <div class="card shadow-sm border-0 mb-3">
+    <div class="card-body">
+      <div class="row g-3">
+
+        <!-- SEARCH -->
+        <div class="col-md-4">
+          <input type="text"
+                 class="form-control"
+                 placeholder="Search description or reference..."
+                 [(ngModel)]="searchText">
+        </div>
+
+        <!-- ACTION FILTER -->
+        <div class="col-md-4">
+          <select class="form-select" [(ngModel)]="selectedAction">
+            <option value="">All Actions</option>
+            <option value="CREATE">CREATE</option>
+            <option value="UPDATE">UPDATE</option>
+            <option value="DELETE">DELETE</option>
+            <option value="LOGIN">LOGIN</option>
+          </select>
+        </div>
+
+        <!-- MODULE FILTER -->
+        <div class="col-md-4">
+          <select class="form-select" [(ngModel)]="selectedModule">
+            <option value="">All Modules</option>
+            <option value="PO">PO</option>
+            <option value="GRN">GRN</option>
+            <option value="QC">QC</option>
+            <option value="SHIPMENT">SHIPMENT</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TABLE ================= -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+
+        <!-- HEADER -->
+        <thead class="table-dark">
+          <tr>
+            <th>User</th>
+            <th>Action</th>
+            <th>Module</th>
+            <th>Reference</th>
+            <th>Description</th>
+            <th>IP Address</th>
+            <th>Performed</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+
+        <!-- BODY -->
+        <tbody>
+
+          <tr *ngFor="let log of paginatedLogs">
+            <!-- USER -->
+            <td>
+              {{ getUserName(log.userId) }}
+            </td>
+
+            <!-- ACTION -->
+            <td>
+              <span class="badge"
+                    [ngClass]="{
+                      'bg-success': log.action === 'CREATE',
+                      'bg-warning text-dark': log.action === 'UPDATE',
+                      'bg-danger': log.action === 'DELETE',
+                      'bg-primary': log.action === 'LOGIN'
+                    }">
+                {{ log.action }}
+              </span>
+            </td>
+
+            <!-- MODULE -->
+            <td>
+              <span class="badge bg-info text-dark">
+                {{ log.module }}
+              </span>
+            </td>
+
+            <!-- REFERENCE -->
+            <td>
+              {{ log.referenceId }}
+            </td>
+
+            <!-- DESCRIPTION -->
+            <td style="max-width:250px;" class="text-truncate" title="{{ log.description }}">
+              {{ log.description }}
+            </td>
+
+            <!-- IP -->
+            <td>
+              <small class="text-muted">
+                {{ log.ipAddress }}
+              </small>
+            </td>
+
+            <!-- DATE -->
+            <td>
+              {{ log.performedAt | date:'medium' }}
+            </td>
+
+            <!-- ACTIONS -->
+            <td class="text-end">
+              <button class="btn btn-sm btn-outline-primary me-1"
+                      data-bs-toggle="modal"
+                      data-bs-target="#logModal"
+                      (click)="edit(log)">
+                Edit
+              </button>
+              <button class="btn btn-sm btn-outline-danger"
+                      (click)="delete(log.id)">
+                Delete
+              </button>
+            </td>
+          </tr>
+
+          <!-- EMPTY -->
+          <tr *ngIf="paginatedLogs.length === 0">
+            <td colspan="8" class="text-center py-5 text-muted">
+              No activity logs found matching criteria
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+    </div>
+
+    <!-- ================= PAGINATION ================= -->
+    <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center py-3" *ngIf="filteredLogs().length > 0">
+      <small class="text-muted">
+        Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ min(currentPage * pageSize, filteredLogs().length) }} of {{ filteredLogs().length }} entries
+      </small>
+      
+      <nav aria-label="Page navigation">
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <button class="page-link" (click)="changePage(currentPage - 1)">Previous</button>
+          </li>
+          <li class="page-item" *ngFor="let page of pageNumbers" [class.active]="page === currentPage">
+            <button class="page-link" (click)="changePage(page)">{{ page }}</button>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <button class="page-link" (click)="changePage(currentPage + 1)">Next</button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ================= MODAL ================= -->
+<div class="modal fade" id="logModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+
+      <!-- HEADER -->
+      <div class="modal-header bg-dark text-white border-0">
+        <h5 class="modal-title fw-bold">
+          <i class="bi bi-file-text me-2"></i>
+          {{ isEditMode ? 'Update Activity Log' : 'Add Activity Log' }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" (click)="reset()"></button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body p-4 bg-light">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <div class="row g-3">
+
+              <!-- USER -->
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-muted small">User</label>
+                <select class="form-select bg-light" [(ngModel)]="log.userId">
+                  <option value="">Select User</option>
+                  <option *ngFor="let u of users" [value]="u.id">
+                    {{ u.name }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- ACTION -->
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-muted small">Action</label>
+                <input class="form-control bg-light" [(ngModel)]="log.action" placeholder="CREATE / UPDATE / DELETE">
+              </div>
+
+              <!-- MODULE -->
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-muted small">Module</label>
+                <input class="form-control bg-light" [(ngModel)]="log.module" placeholder="e.g. PO, GRN">
+              </div>
+
+              <!-- REFERENCE -->
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-muted small">Reference ID</label>
+                <input class="form-control bg-light" [(ngModel)]="log.referenceId" placeholder="e.g. PO-1001">
+              </div>
+
+              <!-- DESCRIPTION -->
+              <div class="col-12">
+                <label class="form-label fw-bold text-muted small">Description</label>
+                <textarea class="form-control bg-light" rows="3" [(ngModel)]="log.description" placeholder="Describe the activity..."></textarea>
+              </div>
+
+              <!-- IP -->
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-muted small">IP Address</label>
+                <input class="form-control bg-light" [(ngModel)]="log.ipAddress" placeholder="e.g. 192.168.1.1">
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="modal-footer border-0 bg-light">
+        <button class="btn btn-secondary px-4" data-bs-dismiss="modal" (click)="reset()">Cancel</button>
+        <button class="btn btn-primary px-4 shadow-sm" data-bs-dismiss="modal" (click)="isEditMode ? update() : add()">
+          <i class="bi" [ngClass]="isEditMode ? 'bi-check2-circle' : 'bi-plus-circle'"></i>
+          {{ isEditMode ? 'Update Log' : 'Save Log' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

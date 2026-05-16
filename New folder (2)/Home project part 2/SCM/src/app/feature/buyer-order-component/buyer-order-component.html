@@ -1,0 +1,478 @@
+<div class="container-fluid px-4 mt-4">
+
+    <!-- PAGE HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold text-dark mb-1">
+                Buyer Order Management
+            </h2>
+
+            <p class="text-muted mb-0 small">
+                Manage buyer orders, approval status,
+                LC information and inventory reservation.
+            </p>
+        </div>
+
+        <!-- ADD BUTTON -->
+        <button
+            class="btn btn-primary shadow-sm"
+            data-bs-toggle="modal"
+            data-bs-target="#buyerOrderModal"
+            (click)="reset()">
+
+            <i class="bi bi-plus-circle me-2"></i>
+            Add Buyer Order
+        </button>
+    </div>
+
+    <!-- TABLE CARD -->
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <!-- TABLE HEAD -->
+                    <thead class="table-light">
+
+                        <tr class="text-uppercase small text-secondary">
+
+                            <th class="ps-4">Buyer</th>
+
+                            <th>LC Number</th>
+
+                            <th>Total Value</th>
+
+                            <th>Sample</th>
+
+                            <th>Status</th>
+
+                            <th>Inventory</th>
+
+                            <th>Created</th>
+
+                            <th class="text-center">Actions</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <!-- TABLE BODY -->
+                    <tbody>
+
+                        <tr *ngFor="let item of buyerOrders">
+
+                            <!-- BUYER -->
+                            <td class="ps-4 fw-semibold">
+                                {{ getBuyerName(item.buyerId) }}
+                            </td>
+
+                            <!-- LC -->
+                            <td>
+                                <span class="badge bg-info-subtle text-dark border">
+                                    {{ getLcNumber(item.lcId) }}
+                                </span>
+                            </td>
+
+                            <!-- VALUE -->
+                            <td class="fw-bold text-success">
+                                {{ item.totalValue | currency:'USD' }}
+                            </td>
+
+                            <!-- SAMPLE -->
+                            <td>
+
+                                <span
+                                    class="badge"
+                                    [ngClass]="
+                                        item.sampleRequested
+                                        ? 'bg-success'
+                                        : 'bg-secondary'
+                                    ">
+
+                                    {{
+                                        item.sampleRequested
+                                        ? 'Requested'
+                                        : 'No Sample'
+                                    }}
+                                </span>
+
+                            </td>
+
+                            <!-- APPROVAL STATUS -->
+                            <td>
+
+                                <span
+                                    class="badge"
+                                    [ngClass]="{
+
+                                        'bg-warning text-dark':
+                                        item.approvalStatus === 'PENDING',
+
+                                        'bg-success':
+                                        item.approvalStatus === 'APPROVED',
+
+                                        'bg-danger':
+                                        item.approvalStatus === 'REJECTED'
+                                    }">
+
+                                    {{ item.approvalStatus }}
+
+                                </span>
+
+                            </td>
+
+                            <!-- INVENTORY -->
+                            <td>
+
+                                <span
+                                    class="badge"
+                                    [ngClass]="
+                                        item.inventoryReserved
+                                        ? 'bg-primary'
+                                        : 'bg-secondary'
+                                    ">
+
+                                    {{
+                                        item.inventoryReserved
+                                        ? 'Reserved'
+                                        : 'Not Reserved'
+                                    }}
+
+                                </span>
+
+                            </td>
+
+                            <!-- CREATED -->
+                            <td class="small text-muted">
+                                {{ item.createdAt | date:'mediumDate' }}
+                            </td>
+
+                            <!-- ACTIONS -->
+                            <td class="text-center">
+
+                                <div class="d-flex justify-content-center gap-1">
+
+                                    <!-- EDIT -->
+                                    <button
+                                        class="btn btn-sm btn-outline-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#buyerOrderModal"
+                                        (click)="edit(item)">
+
+                                        <i class="bi bi-pencil-square">Edit</i>
+
+                                    </button>
+
+                                    <!-- APPROVE -->
+                                    <button
+                                        class="btn btn-sm btn-outline-success"
+                                        (click)="approve(item.id)">
+
+                                        <i class="bi bi-check-circle">Approved</i>
+
+                                    </button>
+
+                                    <!-- REJECT -->
+                                    <button
+                                        class="btn btn-sm btn-outline-warning"
+                                        (click)="reject(item.id)">
+
+                                        <i class="bi bi-x-circle">Rejected</i>
+
+                                    </button>
+
+                                    <!-- INVENTORY TOGGLE -->
+                                    <button
+                                        class="btn btn-sm btn-outline-info"
+                                        (click)="toggleInventory(
+                                            item.id,
+                                            !item.inventoryReserved
+                                        )">
+
+                                        <i class="bi bi-box-seam">Reserved</i>
+
+                                    </button>
+
+                                    <!-- DELETE -->
+                                    <button
+                                        class="btn btn-sm btn-outline-danger"
+                                        (click)="delete(item.id)">
+
+                                        <i class="bi bi-trash">Delete</i>
+
+                                    </button>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        <!-- EMPTY -->
+                        <tr *ngIf="buyerOrders.length === 0">
+
+                            <td colspan="8"
+                                class="text-center py-5 text-muted">
+
+                                No Buyer Orders Found
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- MODAL -->
+<!-- ===================================================== -->
+
+<div
+    class="modal fade"
+    id="buyerOrderModal"
+    tabindex="-1"
+    aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+        <div class="modal-content border-0 shadow-lg">
+
+            <!-- HEADER -->
+            <div class="modal-header bg-dark text-white">
+
+                <h5 class="modal-title fw-bold">
+
+                    <i class="bi bi-cart-check me-2"></i>
+
+                    {{
+                        isEditMode
+                        ? 'Update Buyer Order'
+                        : 'Create Buyer Order'
+                    }}
+
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal"
+                    (click)="reset()">
+
+                </button>
+
+            </div>
+
+            <!-- BODY -->
+            <div class="modal-body bg-light">
+
+                <form
+                    #buyerOrderForm="ngForm"
+                    class="row g-3">
+
+                    <!-- BUYER -->
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Buyer
+                        </label>
+
+                        <select
+                            class="form-select"
+                            [(ngModel)]="buyerOrder.buyerId"
+                            name="buyerId"
+                            required>
+
+                            <option value="">
+                                Select Buyer
+                            </option>
+
+                            <option
+                                *ngFor="let user of users"
+                                [value]="user.id">
+
+                                {{ user.name }}
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- LC -->
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Letter Of Credit
+                        </label>
+
+                        <select
+                            class="form-select"
+                            [(ngModel)]="buyerOrder.lcId"
+                            name="lcId"
+                            required>
+
+                            <option value="">
+                                Select LC Number
+                            </option>
+
+                            <option
+                                *ngFor="let lc of letterOfCredits"
+                                [value]="lc.id">
+
+                                {{ lc.lcNumber }}
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- TOTAL VALUE -->
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Total Value
+                        </label>
+
+                        <input
+                            type="number"
+                            class="form-control"
+                            [(ngModel)]="buyerOrder.totalValue"
+                            name="totalValue"
+                            placeholder="Enter Amount">
+
+                    </div>
+
+                    <!-- STATUS -->
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Approval Status
+                        </label>
+
+                        <select
+                            class="form-select"
+                            [(ngModel)]="buyerOrder.approvalStatus"
+                            name="approvalStatus">
+
+                            <option value="PENDING">
+                                PENDING
+                            </option>
+
+                            <option value="APPROVED">
+                                APPROVED
+                            </option>
+
+                            <option value="REJECTED">
+                                REJECTED
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- SAMPLE -->
+                    <div class="col-md-6">
+
+                        <div class="form-check mt-4">
+
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                [(ngModel)]="buyerOrder.sampleRequested"
+                                name="sampleRequested">
+
+                            <label class="form-check-label">
+
+                                Sample Requested
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                    <!-- INVENTORY -->
+                    <div class="col-md-6">
+
+                        <div class="form-check mt-4">
+
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                [(ngModel)]="buyerOrder.inventoryReserved"
+                                name="inventoryReserved">
+
+                            <label class="form-check-label">
+
+                                Inventory Reserved
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <!-- FOOTER -->
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-light border"
+                    data-bs-dismiss="modal"
+                    (click)="reset()">
+
+                    Cancel
+
+                </button>
+
+                <!-- SAVE -->
+                <button
+                    *ngIf="!isEditMode"
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="add()"
+                    data-bs-dismiss="modal">
+
+                    <i class="bi bi-save me-1"></i>
+                    Save Buyer Order
+
+                </button>
+
+                <!-- UPDATE -->
+                <button
+                    *ngIf="isEditMode"
+                    type="button"
+                    class="btn btn-success"
+                    (click)="update()"
+                    data-bs-dismiss="modal">
+
+                    <i class="bi bi-check-circle me-1"></i>
+                    Update Buyer Order
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

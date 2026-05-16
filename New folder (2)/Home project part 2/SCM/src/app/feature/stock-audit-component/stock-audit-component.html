@@ -1,0 +1,190 @@
+<div class="container mt-4">
+  <!-- ================= TITLE ================= -->
+  <div class="mb-4">
+    <h2 class="text-primary fw-bold">Stock Audit CRUD</h2>
+  </div>
+
+  <!-- ================= FORM ================= -->
+  <div class="card shadow mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">
+        {{ isEditMode ? 'Update Stock Audit' : 'Add Stock Audit' }}
+      </h5>
+    </div>
+
+    <div class="card-body">
+      <form (ngSubmit)="isEditMode ? update() : add()">
+        <div class="row">
+          <!-- PRODUCT -->
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Product</label>
+
+            <select class="form-select" [(ngModel)]="audit.productId" name="productId" required>
+              <option value="">Select Product</option>
+
+              <option *ngFor="let p of products" [value]="p.id">
+                {{ p.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- WAREHOUSE -->
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Warehouse</label>
+
+            <select class="form-select" [(ngModel)]="audit.warehouseId" name="warehouseId" required>
+              <option value="">Select Warehouse</option>
+
+              <option *ngFor="let w of warehouses" [value]="w.id">
+                {{ w.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- AUDITED BY -->
+          <div class="col-md-6">
+            <label class="form-label fw-bold"> Audited By (Manager) </label>
+
+            <select class="form-select" [(ngModel)]="audit.auditedBy" name="auditedBy" required>
+              <option value="">Select Manager</option>
+
+              <option *ngFor="let m of managers" [value]="m.id">👤 {{ m.name }}</option>
+            </select>
+          </div>
+
+          <!-- SYSTEM QTY -->
+          <div class="col-md-4 mb-3">
+            <label class="form-label">System Quantity</label>
+
+            <input
+              type="number"
+              class="form-control"
+              [(ngModel)]="audit.systemQuantity"
+              name="systemQuantity"
+              required
+            />
+          </div>
+
+          <!-- PHYSICAL QTY -->
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Physical Quantity</label>
+
+            <input
+              type="number"
+              class="form-control"
+              [(ngModel)]="audit.physicalQuantity"
+              name="physicalQuantity"
+              required
+            />
+          </div>
+
+          <!-- VARIANCE -->
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Variance</label>
+
+            <input
+              type="number"
+              class="form-control bg-light"
+              [value]="audit.physicalQuantity - audit.systemQuantity"
+              disabled
+            />
+          </div>
+
+          <!-- AUDIT DATE -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Audit Date</label>
+
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="audit.auditDate"
+              name="auditDate"
+              required
+            />
+          </div>
+
+          <!-- REMARKS -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Remarks</label>
+
+            <textarea class="form-control" rows="2" [(ngModel)]="audit.remarks" name="remarks">
+            </textarea>
+          </div>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="mt-3">
+          <button type="submit" class="btn btn-success me-2">
+            {{ isEditMode ? 'Update' : 'Save' }}
+          </button>
+
+          <button type="button" class="btn btn-secondary" (click)="reset()">Reset</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= TABLE ================= -->
+  <div class="card shadow">
+    <div class="card-header bg-dark text-white">
+      <h5 class="mb-0">Stock Audit List</h5>
+    </div>
+
+    <div class="card-body table-responsive">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Product</th>
+            <th>Warehouse</th>
+            <th>Audited By</th>
+            <th>System Qty</th>
+            <th>Physical Qty</th>
+            <th>Variance</th>
+            <th>Date</th>
+            <th>Remarks</th>
+            <th width="150">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of audits; let i = index">
+            <td>{{ i + 1 }}</td>
+
+            <td>{{ getProductName(item.productId) }}</td>
+
+            <td>{{ getWarehouseName(item.warehouseId) }}</td>
+
+            <td>{{ getUserName(item.auditedBy) }}</td>
+
+            <td>{{ item.systemQuantity }}</td>
+
+            <td>{{ item.physicalQuantity }}</td>
+
+            <td>
+              <span
+                class="badge"
+                [ngClass]="{
+                  'bg-success': item.physicalQuantity - item.systemQuantity === 0,
+                  'bg-danger': item.physicalQuantity - item.systemQuantity !== 0,
+                }"
+              >
+                {{ item.physicalQuantity - item.systemQuantity }}
+              </span>
+            </td>
+
+            <td>{{ item.auditDate | date: 'yyyy-MM-dd' }}</td>
+
+            <td>{{ item.remarks }}</td>
+
+            <td>
+              <button class="btn btn-sm btn-primary me-1" (click)="edit(item)">Edit</button>
+
+              <button class="btn btn-sm btn-danger" (click)="delete(item.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

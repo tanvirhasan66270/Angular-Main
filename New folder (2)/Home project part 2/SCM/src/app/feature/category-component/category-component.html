@@ -1,0 +1,93 @@
+<div class="container mt-4">
+
+  <h2>Category CRUD</h2>
+
+  <form (ngSubmit)="isEditMode ? update() : add()">
+
+    <div class="mb-3">
+
+      <label>Category Name</label>
+
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="category.categoryName"
+        name="categoryName"
+        required
+      />
+
+    </div>
+
+    <div class="mb-3">
+
+      <label>Description</label>
+
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="category.deseription"
+        name="description"
+      />
+
+    </div>
+
+    <button type="submit" class="btn btn-primary me-2">
+      {{ isEditMode ? 'Update' : 'Save' }}
+    </button>
+
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="reset()"
+    >
+      Reset
+    </button>
+
+  </form>
+
+  <hr />
+
+  <table class="table table-bordered">
+
+    <thead class="table-dark">
+
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th width="180">Action</th>
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let c of categories">
+
+        <td>{{ c.categoryName }}</td>
+        <td>{{ c.deseription }}</td>
+
+        <td>
+
+          <button
+            class="btn btn-warning btn-sm me-2"
+            (click)="edit(c)"
+          >
+            Edit
+          </button>
+
+          <button
+            class="btn btn-danger btn-sm"
+            (click)="delete(c.id!)"
+          >
+            Delete
+          </button>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>

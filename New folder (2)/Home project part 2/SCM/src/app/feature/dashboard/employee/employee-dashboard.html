@@ -1,0 +1,126 @@
+<div class="container-fluid px-4 py-4">
+  <!-- Header -->
+  <div class="mb-4 d-flex justify-content-between align-items-end">
+    <div>
+      <h2 class="fw-bold text-dark mb-1">Welcome, {{ user?.name || 'Employee' }}!</h2>
+      <p class="text-muted">Here's your operations overview for today.</p>
+    </div>
+    <div class="text-end">
+      <span class="badge bg-primary px-3 py-2 rounded-pill fs-6">{{ user?.role }}</span>
+    </div>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-primary text-white">
+        <div class="d-flex justify-content-between mb-3">
+          <div class="icon-box bg-white bg-opacity-20 rounded-3 p-2">
+            <i class="bi bi-file-earmark-plus fs-4"></i>
+          </div>
+        </div>
+        <h3 class="fw-bold mb-1">{{ stats.pendingRequisitions }}</h3>
+        <p class="small mb-0 opacity-75">Pending Requisitions</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-success text-white">
+        <div class="d-flex justify-content-between mb-3">
+          <div class="icon-box bg-white bg-opacity-20 rounded-3 p-2">
+            <i class="bi bi-box-seam fs-4"></i>
+          </div>
+        </div>
+        <h3 class="fw-bold mb-1">{{ stats.totalProducts }}</h3>
+        <p class="small mb-0 opacity-75">Total Products</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-warning text-dark">
+        <div class="d-flex justify-content-between mb-3">
+          <div class="icon-box bg-dark bg-opacity-10 rounded-3 p-2">
+            <i class="bi bi-building fs-4"></i>
+          </div>
+        </div>
+        <h3 class="fw-bold mb-1">{{ stats.totalWarehouses }}</h3>
+        <p class="small mb-0">Active Warehouses</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-info text-white">
+        <div class="d-flex justify-content-between mb-3">
+          <div class="icon-box bg-white bg-opacity-20 rounded-3 p-2">
+            <i class="bi bi-cart-check fs-4"></i>
+          </div>
+        </div>
+        <h3 class="fw-bold mb-1">{{ stats.totalOrders }}</h3>
+        <p class="small mb-0 opacity-75">Customer Orders</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Tasks -->
+    <div class="col-lg-7">
+      <div class="card border-0 shadow-sm rounded-4 h-100">
+        <div class="card-header bg-white py-3 px-4 border-bottom">
+          <h5 class="fw-bold mb-0">My Assigned Tasks</h5>
+        </div>
+        <div class="card-body p-4">
+          <div class="d-flex flex-column gap-3">
+            <div *ngFor="let task of tasks" class="d-flex align-items-center gap-3 p-3 rounded-3 bg-light">
+              <div class="rounded-circle p-2 bg-primary bg-opacity-10">
+                <i class="bi {{ task.icon }} text-primary fs-5"></i>
+              </div>
+              <div class="flex-grow-1">
+                <div class="fw-semibold text-dark">{{ task.title }}</div>
+                <div class="small text-muted mt-1">
+                  <span
+                    class="badge rounded-pill bg-{{ getPriorityClass(task.priority) }}-subtle text-{{ getPriorityClass(task.priority) }} me-2">{{
+                    task.priority }}</span>
+                  <span class="text-{{ getStatusClass(task.status) }} fw-bold">{{ task.status }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Shortcuts -->
+    <div class="col-lg-5">
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+        <h5 class="fw-bold mb-4">Operational Shortcuts</h5>
+        <div class="row g-3">
+          <div class="col-6">
+            <a routerLink="/inventorie"
+              class="shortcut-box d-flex flex-column align-items-center justify-content-center p-3 rounded-3 bg-light text-decoration-none text-dark border hover-lift">
+              <i class="bi bi-stack fs-3 mb-2 text-primary"></i>
+              <span class="small fw-bold">Stock Registry</span>
+            </a>
+          </div>
+          <div class="col-6">
+            <a routerLink="/purchase-requisition"
+              class="shortcut-box d-flex flex-column align-items-center justify-content-center p-3 rounded-3 bg-light text-decoration-none text-dark border hover-lift">
+              <i class="bi bi-file-earmark-plus fs-3 mb-2 text-success"></i>
+              <span class="small fw-bold">Requisitions</span>
+            </a>
+          </div>
+          <div class="col-6">
+            <a routerLink="/goods-received-note"
+              class="shortcut-box d-flex flex-column align-items-center justify-content-center p-3 rounded-3 bg-light text-decoration-none text-dark border hover-lift">
+              <i class="bi bi-journal-arrow-down fs-3 mb-2 text-warning"></i>
+              <span class="small fw-bold">GRN</span>
+            </a>
+          </div>
+          <div class="col-6">
+            <a routerLink="/daily-report"
+              class="shortcut-box d-flex flex-column align-items-center justify-content-center p-3 rounded-3 bg-light text-decoration-none text-dark border hover-lift">
+              <i class="bi bi-file-earmark-bar-graph fs-3 mb-2 text-info"></i>
+              <span class="small fw-bold">Daily Report</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

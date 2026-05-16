@@ -1,0 +1,115 @@
+<div class="container-fluid px-4 py-4 animate-slide-up">
+  <div class="d-flex align-items-center justify-content-between mb-5">
+    <div>
+      <h1 class="h2 fw-bold text-dark mb-1">Global Logistics Tracking</h1>
+      <p class="text-muted mb-0">Monitor active shipments, delivery status, and fleet performance.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <div class="input-group glass rounded-pill px-3 py-1">
+        <span class="input-group-text bg-transparent border-0 text-muted"><i class="bi bi-search"></i></span>
+        <input type="text" class="form-control bg-transparent border-0 shadow-none small" placeholder="Enter Tracking # or Container ID">
+      </div>
+      <button class="btn btn-primary rounded-pill px-4" (click)="trackShipment()">Track</button>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-5">
+    <!-- Search Result / Active Tracking -->
+    <div class="col-xl-8">
+      <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+        <div class="bg-primary bg-opacity-10 p-4 border-bottom">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <span class="badge-premium bg-primary text-white mb-2">In Transit</span>
+              <h4 class="fw-bold mb-0">Shipment #TRK-99021-USA</h4>
+              <p class="text-muted small mb-0">Origin: Shenzhen, CN | Destination: Chicago, US</p>
+            </div>
+            <div class="text-end">
+              <div class="text-muted small">Estimated Delivery</div>
+              <div class="h5 fw-bold text-primary mb-0">May 24, 2026</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Mock Map Area -->
+        <div class="position-relative" style="height: 400px; background: #e9ecef;">
+          <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="d-flex flex-column align-items-center">
+              <i class="bi bi-truck fs-1 text-primary animate-bounce"></i>
+              <div class="badge bg-white text-dark shadow-sm px-3 py-2 mt-2">Currently near Pacific Ocean</div>
+            </div>
+          </div>
+          <!-- Map Grid Placeholder -->
+          <div class="w-100 h-100 opacity-25" style="background-image: radial-gradient(#adb5bd 1px, transparent 1px); background-size: 20px 20px;"></div>
+        </div>
+
+        <div class="card-footer bg-white p-4">
+          <div class="progress mb-3" style="height: 8px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 65%"></div>
+          </div>
+          <div class="d-flex justify-content-between small fw-bold text-muted text-uppercase">
+            <span>Dispatched</span>
+            <span>At Sea</span>
+            <span class="text-primary">Customs Clear</span>
+            <span>Final Mile</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tracking History & Details -->
+    <div class="col-xl-4">
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+        <h5 class="fw-bold mb-4">Milestone History</h5>
+        <div class="milestone-list">
+          <div class="milestone-item d-flex gap-3 mb-4 active">
+            <div class="milestone-dot bg-primary rounded-circle" style="width: 12px; height: 12px; margin-top: 6px;"></div>
+            <div>
+              <div class="fw-bold small">Departed Sorting Facility</div>
+              <div class="text-muted smaller">Shanghai International Hub</div>
+              <div class="text-muted smaller opacity-75">May 16, 14:20 PM</div>
+            </div>
+          </div>
+          <div class="milestone-item d-flex gap-3 mb-4 opacity-50">
+            <div class="milestone-dot bg-secondary rounded-circle" style="width: 12px; height: 12px; margin-top: 6px;"></div>
+            <div>
+              <div class="fw-bold small">Processed through Customs</div>
+              <div class="text-muted smaller">Guangzhou Port Authority</div>
+              <div class="text-muted smaller opacity-75">May 14, 09:10 AM</div>
+            </div>
+          </div>
+          <div class="milestone-item d-flex gap-3 mb-4 opacity-50">
+            <div class="milestone-dot bg-secondary rounded-circle" style="width: 12px; height: 12px; margin-top: 6px;"></div>
+            <div>
+              <div class="fw-bold small">Order Manifest Created</div>
+              <div class="text-muted smaller">Shenzhen Logistics Center</div>
+              <div class="text-muted smaller opacity-75">May 12, 11:45 AM</div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="my-4">
+
+        <h5 class="fw-bold mb-3">Consignment Details</h5>
+        <div class="d-flex flex-column gap-3">
+          <div class="d-flex justify-content-between small">
+            <span class="text-muted">Carrier</span>
+            <span class="fw-bold">Maersk Global</span>
+          </div>
+          <div class="d-flex justify-content-between small">
+            <span class="text-muted">Weight</span>
+            <span class="fw-bold">1,240.50 KG</span>
+          </div>
+          <div class="d-flex justify-content-between small">
+            <span class="text-muted">Items</span>
+            <span class="fw-bold">42 Cartons</span>
+          </div>
+          <div class="d-flex justify-content-between small">
+            <span class="text-muted">Value</span>
+            <span class="fw-bold">$124,500.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

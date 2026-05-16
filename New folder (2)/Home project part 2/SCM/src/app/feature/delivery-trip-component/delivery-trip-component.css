@@ -1,0 +1,40 @@
+/* ডিজাইন ১ এর জন্য */
+.btn-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: #ffffff;
+}
+
+.edit-btn { color: #0d6efd; border: 1px solid #e7f1ff; }
+.edit-btn:hover { background: #0d6efd; color: #fff; transform: translateY(-2px); }
+
+.delete-btn { color: #dc3545; border: 1px solid #f8d7da; }
+.delete-btn:hover { background: #dc3545; color: #fff; transform: translateY(-2px); }
+
+/* ডিজাইন ২ এর জন্য (Subtle Colors) */
+.btn-soft-primary {
+    background-color: #e7f1ff;
+    color: #0d6efd;
+}
+.btn-soft-primary:hover {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.btn-soft-danger {
+    background-color: #f8d7da;
+    color: #dc3545;
+}
+.btn-soft-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* আইকন এনিমেশন */
+.btn i {
+    font-size: 1.1rem;
+    line-height: 0;
+} 

@@ -1,0 +1,111 @@
+<div class="container-fluid px-4 py-4 animate-slide-up">
+  <div class="d-flex align-items-center justify-content-between mb-5">
+    <div>
+      <h1 class="h2 fw-bold text-dark mb-1">Warehouse Digital Twin</h1>
+      <p class="text-muted mb-0">Real-time floor mapping, zone occupancy, and environmental monitoring.</p>
+    </div>
+    <div class="dropdown">
+      <button class="btn btn-white border shadow-sm dropdown-toggle rounded-pill px-4" type="button" data-bs-toggle="dropdown">
+        {{ currentWarehouse }}
+      </button>
+      <ul class="dropdown-menu shadow border-0">
+        <li><a class="dropdown-item" href="javascript:void(0)" (click)="changeWarehouse('East Coast Hub')">East Coast Hub</a></li>
+        <li><a class="dropdown-item" href="javascript:void(0)" (click)="changeWarehouse('West Coast Facility')">West Coast Facility</a></li>
+        <li><a class="dropdown-item" href="javascript:void(0)" (click)="changeWarehouse('Central Distribution Center (CDC-1)')">Central Distribution Center (CDC-1)</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-5">
+    <div class="col-xl-8">
+      <!-- Warehouse Map -->
+      <div class="card border-0 shadow-sm rounded-4 h-100">
+        <div class="card-header bg-white border-0 p-4 d-flex align-items-center justify-content-between">
+          <h5 class="fw-bold mb-0">Live Floor Map</h5>
+          <div class="d-flex gap-2">
+            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2">Zone A: 45%</span>
+            <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3 py-2">Zone B: 82%</span>
+            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-2">Zone C: 98%</span>
+          </div>
+        </div>
+        <div class="card-body p-4 bg-light bg-opacity-50">
+          <div class="warehouse-grid p-4 bg-white rounded-4 shadow-inner">
+            <div class="row g-2 mb-2" *ngFor="let row of [1,2,3,4,5]">
+              <div class="col" *ngFor="let col of [1,2,3,4,5,6,7,8]">
+                <div class="rack-slot rounded-2 d-flex align-items-center justify-content-center text-white small" 
+                     [ngClass]="getRackClass(row, col)"
+                     style="height: 60px; cursor: pointer; transition: transform 0.2s;"
+                     [style.transform]="selectedRack === 'R' + row + '-C' + col ? 'scale(1.1)' : 'none'"
+                     (click)="selectRack(row, col)">
+                  R{{row}}-{{col}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-xl-4">
+      <div class="row g-4">
+        <!-- Environmental Sensors -->
+        <div class="col-12">
+          <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h5 class="fw-bold mb-4">Internal Environment</h5>
+            <div class="d-flex flex-column gap-4">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="bg-primary bg-opacity-10 p-2 rounded-3 text-primary"><i class="bi bi-thermometer-half fs-4"></i></div>
+                  <div>
+                    <div class="small fw-bold text-muted">Temperature</div>
+                    <div class="h5 fw-bold mb-0">{{ temperature }}°C</div>
+                  </div>
+                </div>
+                <span class="text-success small fw-bold" [ngClass]="{'text-warning': temperature > 20}">{{ temperature > 20 ? 'Warm' : 'Optimal' }}</span>
+              </div>
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="bg-info bg-opacity-10 p-2 rounded-3 text-info"><i class="bi bi-droplet fs-4"></i></div>
+                  <div>
+                    <div class="small fw-bold text-muted">Humidity</div>
+                    <div class="h5 fw-bold mb-0">{{ humidity }}%</div>
+                  </div>
+                </div>
+                <span class="text-success small fw-bold">Stable</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Movements -->
+        <div class="col-12">
+          <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h5 class="fw-bold mb-4">Recent Inbound/Outbound</h5>
+            <div class="activity-timeline">
+              <div class="timeline-item d-flex gap-3 mb-4">
+                <div class="timeline-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
+                  <i class="bi bi-arrow-down-left small"></i>
+                </div>
+                <div>
+                  <div class="fw-bold small">GRN #8821 Received</div>
+                  <div class="text-muted smaller">124 Items moved to Zone B</div>
+                  <div class="text-muted smaller opacity-75">10 mins ago</div>
+                </div>
+              </div>
+              <div class="timeline-item d-flex gap-3 mb-4">
+                <div class="timeline-icon bg-danger text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
+                  <i class="bi bi-arrow-up-right small"></i>
+                </div>
+                <div>
+                  <div class="fw-bold small">Dispatch #9901 Outbound</div>
+                  <div class="text-muted smaller">Electronics to New York Hub</div>
+                  <div class="text-muted smaller opacity-75">45 mins ago</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

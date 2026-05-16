@@ -1,0 +1,21 @@
+.spin {
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.btn-white {
+  background-color: #fff;
+  color: #374151;
+}
+
+.btn-white:hover {
+  background-color: #f9fafb;
+  color: #111827;
+}
