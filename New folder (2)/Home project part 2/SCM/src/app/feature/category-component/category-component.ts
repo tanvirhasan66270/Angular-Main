@@ -1,9 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
 import { CategoryService } from '../../core/service/category-service';
 import { Category } from '../../shared/model';
-
 
 @Component({
   selector: 'app-category-component',
@@ -23,7 +28,10 @@ export class CategoryComponent implements OnInit {
 
   isEditMode = false;
 
-  constructor(private service: CategoryService) {}
+  constructor(
+    private service: CategoryService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
     this.getAll();
@@ -36,6 +44,9 @@ export class CategoryComponent implements OnInit {
     this.service.getAll().subscribe({
       next: (res) => {
         this.categories = res;
+
+        // trigger UI refresh
+        this.cdr.markForCheck();
       },
       error: (err) => console.log(err),
     });
@@ -49,6 +60,8 @@ export class CategoryComponent implements OnInit {
       next: () => {
         this.getAll();
         this.reset();
+
+        this.cdr.detectChanges();
       },
       error: (err) => console.log(err),
     });
@@ -60,6 +73,8 @@ export class CategoryComponent implements OnInit {
   edit(item: Category): void {
     this.category = { ...item };
     this.isEditMode = true;
+
+    this.cdr.markForCheck();
   }
 
   // =====================
@@ -74,6 +89,8 @@ export class CategoryComponent implements OnInit {
         next: () => {
           this.getAll();
           this.reset();
+
+          this.cdr.markForCheck();
         },
         error: (err) => console.log(err),
       });
@@ -85,7 +102,11 @@ export class CategoryComponent implements OnInit {
   delete(id: string): void {
 
     this.service.delete(id).subscribe({
-      next: () => this.getAll(),
+      next: () => {
+        this.getAll();
+
+        this.cdr.markForCheck();
+      },
       error: (err) => console.log(err),
     });
   }
@@ -100,5 +121,7 @@ export class CategoryComponent implements OnInit {
     };
 
     this.isEditMode = false;
+
+    this.cdr.markForCheck();
   }
 }
